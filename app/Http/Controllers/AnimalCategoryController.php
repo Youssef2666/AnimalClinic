@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAnimalCategoryRequest;
+use App\Http\Resources\AnimalCategoryResource;
 use App\Models\AnimalCategory;
 use App\traits\ResponseTrait;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class AnimalCategoryController extends Controller
     public function index()
     {
         $categories = AnimalCategory::all();
-        return $categories;
+        return AnimalCategoryResource::collection($categories);
     }
 
     /**
@@ -30,7 +31,8 @@ class AnimalCategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $category = AnimalCategory::findOrFail($id);
+        return new AnimalCategoryResource($category);
     }
 
     /**
@@ -38,7 +40,9 @@ class AnimalCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $category = AnimalCategory::findOrFail($id);
+        $category->update($request->all());
+        return $this->success($category, 'category updated successfully');
     }
 
     /**
@@ -46,6 +50,7 @@ class AnimalCategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        AnimalCategory::destroy($id);
+        return $this->success(null, 'category deleted successfully');
     }
 }

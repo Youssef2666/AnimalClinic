@@ -14,7 +14,7 @@ class AnimalController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $animals = Animal::with('user')->get();
+        $animals = Animal::with(['user', 'category'])->get();
         return AnimalResource::collection($animals);
     }
 
