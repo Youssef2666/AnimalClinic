@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnimalCategoryController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DoctorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
         [
             'animals' => AnimalController::class,
             'animals_category' => AnimalCategoryController::class,
+            'doctors' => DoctorController::class,
         ]
     );
 
