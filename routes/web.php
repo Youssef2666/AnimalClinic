@@ -15,3 +15,12 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+Route::middleware([
+    'auth:sanctum',
+    'role:admin',
+])->group(function () {
+    Route::get('check', function () {
+        return 'yes I am Admin';
+    });
+});
