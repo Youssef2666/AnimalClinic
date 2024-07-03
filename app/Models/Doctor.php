@@ -20,4 +20,9 @@ class Doctor extends Model
         'gender' => GenderStatus::class,
     ];
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
 }

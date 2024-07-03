@@ -25,4 +25,9 @@ class Animal extends Model
     {
         return $this->belongsTo(AnimalCategory::class, 'animal_type');
     }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }
