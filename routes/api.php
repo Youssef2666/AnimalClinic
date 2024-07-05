@@ -14,10 +14,13 @@ Route::get('/user', function (Request $request) {
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::get('users', [AuthController::class, 'index']);
+//email
+Route::post('send-email-verification', [AuthController::class, 'sendEmailVerification']);
+Route::post('verify-email', [AuthController::class, 'verifyEmail']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('authme', [AuthController::class, 'authme']);
+    Route::delete('logout', [AuthController::class, 'logout']);
     Route::apiResources(
         [
             'animals' => AnimalController::class,
@@ -25,5 +28,15 @@ Route::middleware('auth:sanctum')->group(function () {
             'doctors' => DoctorController::class,
         ]
     );
+});
 
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('check', function () {
+        return 'yes I am Admin';
+    });
+    Route::get('users', [AuthController::class, 'index']);
+});
+
+Route::fallback(function () {
+    return response()->json(['message' => 'Page Not Found.'], 404);
 });

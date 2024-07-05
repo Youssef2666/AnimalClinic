@@ -13,8 +13,12 @@ class DoctorController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $doctors = Doctor::all();
-        return DoctorResource::collection($doctors);
+        try {
+            $doctors = Doctor::all();
+            return DoctorResource::collection($doctors);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage());
+        }
     }
 
     /**
