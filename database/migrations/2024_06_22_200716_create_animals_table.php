@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('animals', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('age');
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(AnimalCategory::class, 'animal_type');
+            $table->foreignIdFor(AnimalCategory::class);
+            $table->string('name');
+            $table->integer('age')->comment('age in months');
+            $table->float('weight');
+            $table->enum('gender', ['male', 'female'])->default('male');
             $table->timestamps();
         });
     }

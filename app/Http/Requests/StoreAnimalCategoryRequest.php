@@ -22,7 +22,7 @@ class StoreAnimalCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required'],
+            'name' => ['required'],
         ];
     }
 }

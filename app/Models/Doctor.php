@@ -10,9 +10,13 @@ class Doctor extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'user_id';
+
     protected $fillable = [
-        'name',
-        'email',
+        'user_id',
+        'specialization',
+        'work_start_time',
+        'work_end_time',
         'gender',
     ];
 
@@ -22,7 +26,12 @@ class Doctor extends Model
 
     public function appointments()
     {
-        return $this->hasMany(Appointment::class);
+        return $this->hasMany(Appointment::class, 'user_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

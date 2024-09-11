@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\GenderStatus;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+
 
 class StoreAnimalRequest extends FormRequest
 {
@@ -23,7 +26,10 @@ class StoreAnimalRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'age' => 'required',
+            'age' => 'required|integer',
+            'weight' => 'required|numeric',
+            'animal_category_id' => 'required',
+            'gender' => ['required', Rule::in(array_column(GenderStatus::cases(), 'value'))],
         ];
     }
 }

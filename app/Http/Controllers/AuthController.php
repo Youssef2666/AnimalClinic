@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\traits\ResponseTrait;
 use Illuminate\Http\Request;
+use App\traits\ResponseTrait;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterRequest;
+use App\Mail\ConfirmEmail;
+use App\Notifications\EmailVerificationNotification;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -25,7 +29,8 @@ class AuthController extends Controller
         try {
             $user = User::create($request->validated());
             $token = $user->createToken('auth_token')->plainTextToken;
-            return $this->successWithToken($user, token: $token);
+            // $user->notify(new EmailVerificationNotification($user->email));
+            return $this->successWithToken($user, token: $token);     
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), 500);
         }
@@ -47,7 +52,8 @@ class AuthController extends Controller
 
     public function authme()
     {
-        return Auth::user();
+        $user = Auth::user();
+        return $this->success($user, 'U are authinticated');
     }
 
     public function sendEmailVerification(Request $request)

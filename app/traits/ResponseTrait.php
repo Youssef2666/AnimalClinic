@@ -2,17 +2,20 @@
 
 namespace App\traits;
 
+use Illuminate\Http\JsonResponse;
+
 trait ResponseTrait
 {
 
-    public function success($data = null, $message = null, $code = 200)
-    {
-        return response()->json([
-            'status' => true,
-            'data' => $data,
-            'message' => $message,
-        ], $code);
-    }
+  
+    protected function success($data, string $message = 'Operation successful', int $status = 200): JsonResponse
+{
+    return response()->json([
+        'status' => 'success',
+        'message' => $message,
+        'data' => $data,
+    ], $status);
+}
     public function successWithToken($data = null, $message = 'success', $code = 200, $token = null)
     {
         return response()->json([

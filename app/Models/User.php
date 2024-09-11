@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +12,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
     use HasFactory;
@@ -18,6 +20,12 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -27,6 +35,20 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'status',
+        'role'
+    ];
+
+    public const ROLES = [
+        'user' => 'User',
+        'admin' => 'Admin',
+        'doctor' => 'Doctor',
+        'employee' => 'Employee',
+    ];
+    
+    public const STATUS = [
+        'InActive' => 0,
+        'Active' => 1,  
     ];
 
     /**
@@ -73,8 +95,23 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === 'user';
     }
 
+    public function isDoctor()
+    {
+        return $this->role === 'doctor';
+    }
+    public function isEmployee()
+    {
+        return $this->role === 'employee';
+    }
+
     public function hasRole($role)
     {
         return $this->role === $role;
     }
+
+    public function scopeDoctor($query)
+{
+    return $query->where('role', 'doctor'); // Adjust as needed
+}
+
 }

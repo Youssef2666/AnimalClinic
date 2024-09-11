@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Animal;
-use App\Models\Doctor;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('treatments', function (Blueprint $table) {
+        Schema::create('vaccination_categories', function (Blueprint $table) {
             $table->id();
-            $table->date('treatment_date');
-            $table->text('notes');
-            $table->foreignIdFor(Doctor::class);
-            $table->foreignIdFor(Animal::class);
+            $table->string('name');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('treatments');
+        Schema::dropIfExists('vaccination_categories');
     }
 };
