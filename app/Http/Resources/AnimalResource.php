@@ -18,6 +18,9 @@ class AnimalResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'age' => $this->age,
+            'weight' => $this->weight,
+            'gender' => $this->gender,
             'user' => new UserResource($this->whenLoaded('user')),
             'category' => new AnimalCategoryResource($this->whenLoaded('category')),
         ];

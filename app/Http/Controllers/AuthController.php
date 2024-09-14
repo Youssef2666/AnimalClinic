@@ -63,24 +63,24 @@ class AuthController extends Controller
         return $this->success('Verification link sent on your email');
     }
 
-    public function verifyEmail(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
+    // public function verifyEmail(Request $request)
+    // {
+    //     $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
-            return $this->error('User not found', 404);
-        }
+    //     if (!$user) {
+    //         return $this->error('User not found', 404);
+    //     }
 
-        if ($user->hasVerifiedEmail()) {
-            return response()->json(['message' => 'Email already verified']);
-        }
+    //     if ($user->hasVerifiedEmail()) {
+    //         return response()->json(['message' => 'Email already verified']);
+    //     }
 
-        if ($user->markEmailAsVerified()) {
-            return $this->success('Email verified successfully', code: 200);
-        } else {
-            return $this->error('Unable to verify email', 500);
-        }
-    }
+    //     if ($user->markEmailAsVerified()) {
+    //         return $this->success('Email verified successfully', code: 200);
+    //     } else {
+    //         return $this->error('Unable to verify email', 500);
+    //     }
+    // }
 
     public function logout(Request $request)
     {

@@ -85,4 +85,9 @@ class AnimalController extends Controller
         Animal::destroy($id);
         return $this->success(null, 'animal deleted successfully');
     }
+
+    public function getUserAnimals(Request $request, $id){
+        $animals = Animal::where('user_id', $id)->get();
+        return AnimalResource::collection($animals);
+    }
 }

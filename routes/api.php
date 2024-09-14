@@ -44,6 +44,8 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
     ]);
 });
 
+Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);
+
 // Routes for admin users
 Route::middleware(['auth:sanctum', 'role:admin', 'status'])->group(function () {
     Route::get('check', function () {

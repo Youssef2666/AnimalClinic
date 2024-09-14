@@ -61,10 +61,12 @@ class DoctorResource extends Resource
 
                     TimePicker::make('work_start_time')
                         ->label('Work Start Time')
+                        ->seconds(false)
                         ->required(),
 
                     TimePicker::make('work_end_time')
                         ->label('Work End Time')
+                        ->seconds(false)
                         ->required(),
 
                     Select::make('gender')

@@ -2,10 +2,10 @@
 
 use App\Models\Doctor;
 use App\Models\MedicalRecord;
-use App\Models\VaccinationCategory;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\MedicineCategory;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -14,14 +14,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vaccinations', function (Blueprint $table) {
+        Schema::create('medicines', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(VaccinationCategory::class);
             $table->foreignIdFor(Doctor::class);
             $table->foreignIdFor(MedicalRecord::class);
-            $table->date('vaccination_date');
-            $table->text('notes')->nullable();
-            // $table->float('cost');
+            $table->foreignIdFor(MedicineCategory::class);
+            $table->string('description')->nullable();            
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vaccinations');
+        Schema::dropIfExists('medicines');
     }
 };

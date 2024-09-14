@@ -18,9 +18,11 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(AnimalCategory::class);
             $table->string('name');
+            $table->string('animal_type');
             $table->integer('age')->comment('age in months');
             $table->float('weight');
             $table->enum('gender', ['male', 'female'])->default('male');
+            $table->string('backColor')->nullable();
             $table->timestamps();
         });
     }

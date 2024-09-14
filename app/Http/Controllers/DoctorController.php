@@ -14,7 +14,7 @@ class DoctorController extends Controller
     public function index()
     {
         try {
-            $doctors = Doctor::all();
+            $doctors = Doctor::with('user')->get();
             return DoctorResource::collection($doctors);
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());
