@@ -51,7 +51,6 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
         'medicines' => MedicineController::class,
         'vaccinations' => VaccinationController::class
     ]);
-
     Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
 });
 

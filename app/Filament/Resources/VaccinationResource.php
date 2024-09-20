@@ -4,21 +4,24 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Medicine;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\Vaccination;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\MedicineResource\Pages;
+use Filament\Forms\Components\DateTimePicker;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\MedicineResource\RelationManagers;
+use App\Filament\Resources\VaccinationResource\Pages;
+use App\Filament\Resources\VaccinationResource\RelationManagers;
 
-class MedicineResource extends Resource
+class VaccinationResource extends Resource
 {
-    protected static ?string $model = Medicine::class;
+    protected static ?string $model = Vaccination::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -26,17 +29,22 @@ class MedicineResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('category_id')  
-                ->relationship('category', 'name')  // Specify the relationship and display the 'name' field
-                ->required()
-                ->label('Medicine Category'),
+                Select::make('vaccination_category_id')
+                ->relationship('vaccinationCategory', 'name')
+                ->required(),
 
-                Select::make('medical_record_id')  
-                ->relationship('medicalRecord', 'notes')  
-                ->required()
-                ->label('Medical Record'),
+                Hidden::make('user_id')
+                ->default(Auth::id()),
+                
+                Select::make('medical_record_id')
+                ->relationship('medicalRecord', 'notes')
+                ->required(),
+                
+                DateTimePicker::make('vaccination_date')
+                ->label('Vaccination Date')
+                ->required(),
 
-                TextInput::make('description')
+                TextInput::make('notes')
             ]);
     }
 
@@ -44,19 +52,16 @@ class MedicineResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('category.name')
-                ->label('Medicine Name')
+                TextColumn::make('vaccinationCategory.name')
+                ->label('Vaccination Name')
+                ->searchable(),
+
+                TextColumn::make('vaccinationCategory.cost')
+                ->label('Vaccination Cost')
                 ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
                 ->label('Medical Record ID')
-                ->searchable(),
-                TextColumn::make('medicalRecord.notes')
-                ->label('Medical Record Notes')
-                ->searchable()
-                ->toggleable(),
-
-                TextColumn::make('description')
                 ->searchable(),
 
             ])
@@ -83,9 +88,9 @@ class MedicineResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMedicines::route('/'),
-            'create' => Pages\CreateMedicine::route('/create'),
-            'edit' => Pages\EditMedicine::route('/{record}/edit'),
+            'index' => Pages\ListVaccinations::route('/'),
+            'create' => Pages\CreateVaccination::route('/create'),
+            'edit' => Pages\EditVaccination::route('/{record}/edit'),
         ];
     }
 }

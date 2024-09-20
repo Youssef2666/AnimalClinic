@@ -18,24 +18,28 @@ class VaccinationCategorySeeder extends Seeder
             [
                 'name' => 'Pfizer-BioNTech',
                 'description' => 'Vaccines for Covid-19.',
+                'cost' => 100.00,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Moderna',
-                'description' => 'Vaccines for Covid-19.',
+                'description' => 'Vaccines for Covid-19 Ultra.',
+                'cost' => 200.00,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'AstraZeneca',
-                'description' => 'Vaccines for Covid-19.',
+                'description' => 'Vaccines for Covid-19 Plus.',
+                'cost' => 130.00,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Sinovac',
-                'description' => 'Vaccines for Covid-19.',
+                'description' => 'Vaccines for Covid-20.',
+                'cost' => 150.00,
                 'created_at' => now(),
                 'updated_at' => now(),
         ]

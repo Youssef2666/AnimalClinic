@@ -19,9 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(VaccinationCategory::class);
             $table->foreignIdFor(Doctor::class, 'user_id');
             $table->foreignIdFor(MedicalRecord::class);
-            $table->date('vaccination_date');
+            $table->timestamp('vaccination_date');
             $table->text('notes')->nullable();
-            // $table->float('cost');
             $table->timestamps();
         });
     }

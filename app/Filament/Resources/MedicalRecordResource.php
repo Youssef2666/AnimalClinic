@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\MedicalRecordResource\Pages;
 use App\Filament\Resources\MedicalRecordResource\RelationManagers;
+use App\Filament\Resources\MedicalRecordResource\RelationManagers\MedicinesRelationManager;
+use App\Filament\Resources\MedicalRecordResource\RelationManagers\SurgeriesRelationManager;
+use App\Filament\Resources\MedicalRecordResource\RelationManagers\VaccinationsRelationManager;
+use Filament\Tables\Columns\TextColumn;
 
 class MedicalRecordResource extends Resource
 {
@@ -25,16 +29,7 @@ class MedicalRecordResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('record_type')
-                ->label('Record Type')
-                ->options([
-                    'medicine' => 'Medicine',
-                    'surgery' => 'Surgery',
-                    'vaccination' => 'Vaccination',
-                ])
-                ->required()
-                ->reactive()
-                ->afterStateUpdated(fn ($state, callable $set) => static::redirectToResource($state))
+                TextInput::make('notes')
             ]);
     }
 
@@ -42,7 +37,10 @@ class MedicalRecordResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('id')
+                ->searchable(),
+                TextColumn::make('animal.name'),
+                TextColumn::make('notes'),
             ])
             ->filters([
                 //
@@ -60,7 +58,9 @@ class MedicalRecordResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MedicinesRelationManager::class,
+            SurgeriesRelationManager::class,
+            VaccinationsRelationManager::class
         ];
     }
 

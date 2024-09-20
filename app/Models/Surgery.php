@@ -15,7 +15,6 @@ class Surgery extends Model
         'medical_record_id',
         'surgery_date',
         'notes',
-        'cost',
     ];
 
     public function surgeryCategory()

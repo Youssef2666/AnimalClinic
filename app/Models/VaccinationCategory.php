@@ -12,5 +12,6 @@ class VaccinationCategory extends Model
     protected $fillable = [
         'name',
         'description',
+        'cost'
     ];
 }

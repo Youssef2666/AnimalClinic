@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\AppointmentInterviewStatus;
+use App\Enums\AppointmentStatus;
+use App\Enums\AppointmentTypeStatus;
 use App\Models\Animal;
 use App\Models\Doctor;
 use Illuminate\Support\Facades\Schema;
@@ -19,9 +22,10 @@ return new class extends Migration
             $table->foreignIdFor(Animal::class);
             $table->date('date');
             $table->time('time');
-            $table->enum('interview', ['online', 'offline']);
-            $table->enum('status', ['confirmed', 'canceled', 'completed'])->default('confirmed');
-            $table->enum('type', ['consultation', 'surgery', 'vaccination', 'follow-up'])->default('consultation');
+            $table->enum('interview', array_column(AppointmentInterviewStatus::cases(), 'value'));
+            $table->enum('status', array_column(AppointmentStatus::cases(), 'value'));
+            $table->enum('type', array_column(AppointmentTypeStatus::cases(), 'value'))
+            ->default(AppointmentTypeStatus::CONSULTATION->value);
             $table->timestamps();
         });
     }

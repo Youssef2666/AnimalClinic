@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Doctor;
 use App\Enums\DaysStatus;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('doctor_work_days', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Doctor::class, 'user_id');
             $table->enum('day', array_column(DaysStatus::cases(), 'value'));
             $table->timestamps();
         });

@@ -19,7 +19,6 @@ class SurgerySeeder extends Seeder
                 'medical_record_id' => 2,
                 'surgery_date' => '2024-01-01',
                 'notes' => 'Surgery related to heart conditions.',
-                'cost' => 100.0,
             ],
             [
                 'surgery_category_id' => 2,
@@ -27,7 +26,6 @@ class SurgerySeeder extends Seeder
                 'medical_record_id' => 3,
                 'surgery_date' => '2024-02-01',
                 'notes' => 'Surgery related to bone fracture.',
-                'cost' => 200.0,
             ],
             [
                 'surgery_category_id' => 3,
@@ -35,7 +33,6 @@ class SurgerySeeder extends Seeder
                 'medical_record_id' => 4,
                 'surgery_date' => '2024-03-01',
                 'notes' => 'Surgery related to brain damage.',
-                'cost' => 300.0,
             ]
         ];
     }

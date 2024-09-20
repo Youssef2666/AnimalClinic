@@ -19,9 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(SurgeryCategory::class);
             $table->foreignIdFor(MedicalRecord::class);
             $table->foreignIdFor(Doctor::class, 'user_id');
-            $table->date('surgery_date');   
+            $table->timestamp('surgery_date');   
             $table->text('notes')->nullable();
-            $table->float('cost');
             $table->timestamps();
         });
     }

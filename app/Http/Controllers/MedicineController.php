@@ -15,9 +15,7 @@ class MedicineController extends Controller
         return $medicines;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         $medicine = Medicine::create($request->all());

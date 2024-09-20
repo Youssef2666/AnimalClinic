@@ -1,48 +1,50 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\MedicalRecordResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Medicine;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\MedicineResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\MedicineResource\RelationManagers;
+use Filament\Resources\RelationManagers\RelationManager;
 
-class MedicineResource extends Resource
+class MedicinesRelationManager extends RelationManager
 {
-    protected static ?string $model = Medicine::class;
+    protected static string $relationship = 'medicines';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('category_id')  
+                Select::make('medicine_category_id')  
                 ->relationship('category', 'name')  // Specify the relationship and display the 'name' field
                 ->required()
                 ->label('Medicine Category'),
 
-                Select::make('medical_record_id')  
-                ->relationship('medicalRecord', 'notes')  
-                ->required()
-                ->label('Medical Record'),
+                Hidden::make('user_id')
+                ->default(Auth::id()) // Automatically set the value to the authenticated user
+                ->required(),
+
+                // Select::make('medical_record_id')  
+                // ->relationship('medicalRecord', 'notes')  
+                // ->required()
+                // ->label('Medical Record'),
 
                 TextInput::make('description')
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('description')
             ->columns([
                 TextColumn::make('category.name')
                 ->label('Medicine Name')
@@ -58,34 +60,21 @@ class MedicineResource extends Resource
 
                 TextColumn::make('description')
                 ->searchable(),
-
             ])
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListMedicines::route('/'),
-            'create' => Pages\CreateMedicine::route('/create'),
-            'edit' => Pages\EditMedicine::route('/{record}/edit'),
-        ];
     }
 }
