@@ -15,6 +15,7 @@ class Animal extends Model
         'user_id',
         'age',
         'weight',
+        'animal_type',
         'animal_category_id',
         'gender'
     ];

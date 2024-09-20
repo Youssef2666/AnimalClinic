@@ -17,7 +17,7 @@ class Doctor extends Model
         'specialization',
         'work_start_time',
         'work_end_time',
-        'gender',
+        'cost',
     ];
 
     protected $casts = [

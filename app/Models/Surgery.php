@@ -10,11 +10,26 @@ class Surgery extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'surgery_category_id',
-        'doctor_id',
+        'user_id',
+        'medical_record_id',
         'surgery_date',
         'notes',
-        'notes',
+        'cost',
     ];
+
+    public function surgeryCategory()
+    {
+        return $this->belongsTo(SurgeryCategory::class);
+    }
+
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
+    }
+
+    public function medicalRecord()
+    {
+        return $this->belongsTo(MedicalRecord::class);
+    }
 }

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ForgotRequest extends FormRequest
+class ForgotRequest extends BaseRequest
 {
     use ResponseTrait;
     public function authorize(): bool
@@ -27,10 +27,10 @@ class ForgotRequest extends FormRequest
         ];
         } 
 
-        protected function failedValidation(Validator $validator)
-        {
-            throw new HttpResponseException(
-                $this->error($validator->errors()->first(), 400)
-            );
-        }
+        // protected function failedValidation(Validator $validator)
+        // {
+        //     throw new HttpResponseException(
+        //         $this->error($validator->errors()->first(), 400)
+        //     );
+        // }
     }

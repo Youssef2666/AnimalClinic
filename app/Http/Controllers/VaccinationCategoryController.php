@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\VaccinationCategory;
+use App\traits\ResponseTrait;
 
 class VaccinationCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use ResponseTrait;
     public function index()
     {
-        //
+        $vaccinations = VaccinationCategory::all();
+        return $this->success($vaccinations);
     }
 
     /**
@@ -19,7 +20,9 @@ class VaccinationCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $vaccination = VaccinationCategory::create($request->all());
+        return $this->success($vaccination);
+
     }
 
     /**
@@ -27,7 +30,8 @@ class VaccinationCategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $vaccination = VaccinationCategory::find($id);
+        return $this->success($vaccination);
     }
 
     /**
@@ -35,7 +39,9 @@ class VaccinationCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $vaccination = VaccinationCategory::find($id);
+        $vaccination->update($request->all());
+        return $this->success($vaccination);
     }
 
     /**
@@ -43,6 +49,8 @@ class VaccinationCategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $vaccination = VaccinationCategory::find($id);
+        $vaccination->delete();
+        return $this->success($vaccination);
     }
 }

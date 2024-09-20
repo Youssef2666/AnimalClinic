@@ -7,18 +7,17 @@ use Ichtrojan\Otp\Otp;
 use Illuminate\Http\Request;
 use App\Traits\ResponseTrait;
 use App\Http\Requests\ForgotRequest;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Notifications\ResetPasswordNotification;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
 
 class PasswordController extends Controller
 {
     use ResponseTrait;
 
-    protected $otp;
 
-    public function __construct(Otp $otp)
+    public function __construct(private Otp $otp)
     {
         $this->otp = $otp;
     }
@@ -36,7 +35,7 @@ class PasswordController extends Controller
         // Send OTP via notification
         $user->notify(new ResetPasswordNotification($user->email, $otpDetails->token));
 
-        return $this->success($otpDetails->token, 'Password reset link sent to your email');
+        return $this->success($otpDetails->token, 'Email verification OTP sent');
     } catch (\Exception $exception) {
         return $this->error($exception->getMessage());
     }
@@ -67,5 +66,21 @@ class PasswordController extends Controller
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage());
         }
+    }
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $response = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return response()->json([
+            'status' => $response == Password::RESET_LINK_SENT
+                ? 'Password reset link sent.'
+                : 'Failed to send reset link.',
+        ]);
     }
 }

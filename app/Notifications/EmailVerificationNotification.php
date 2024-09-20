@@ -19,13 +19,13 @@ class EmailVerificationNotification extends Notification
     public $mailer;
     private $otp;
     public $receiverEmail;
-    public function __construct($receiverEmail)
+    public function __construct($receiverEmail, $otp)
     {
         $this->message = "use the below code to verify your email";
         $this->subject = "Email Verification";
         $this->fromEmail = 'kingyoussef76@gmail.com';
         $this->mailer = 'smtp';
-        $this->otp = new Otp;
+        $this->otp = $otp;
         Log::info('EmailVerificationNotification constructor');
         $this->receiverEmail = $receiverEmail;
     }

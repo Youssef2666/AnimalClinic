@@ -1,24 +1,26 @@
 <?php
 
-use App\Http\Controllers\AnimalCategoryController;
-use App\Http\Controllers\AnimalController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\PasswordController;
-use App\Http\Controllers\SurgeryCategoryController;
-use App\Http\Controllers\SurgeryController;
-use App\Http\Controllers\ZoomController;
 use App\Models\User;
-use function Pest\Laravel\json;
 use Illuminate\Http\Request;
+use function Pest\Laravel\json;
 use Illuminate\Support\Facades\Route;
-
-
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ZoomController;
+use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\SurgeryController;
+use App\Http\Controllers\MedicineController;
+use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\VaccinationController;
+use App\Http\Controllers\MedicalRecordController;
+use App\Http\Controllers\AnimalCategoryController;
+use App\Http\Controllers\SurgeryCategoryController;
+use App\Http\Controllers\MedicineCategoryController;
+use App\Http\Controllers\VaccinationCategoryController;
 
 Route::get('/test',function(){
     return "GOOOOOOOOOOOO";
-});
+})->middleware(['auth:sanctum', 'verified']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,8 +28,10 @@ Route::get('/user', function (Request $request) {
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::post('/forgot-password', [PasswordController::class, 'forgotPassword']);
-Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
+// Route::post('/forgot-password', [PasswordController::class, 'forgotPassword']);
+// Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
+Route::post('/forget-password', [PasswordController::class, 'sendResetLinkEmail']);
+Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 
 
 
@@ -37,11 +41,18 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
     Route::delete('logout', [AuthController::class, 'logout']);
     Route::apiResources([
         'animals' => AnimalController::class,
-        'animals_category' => AnimalCategoryController::class,
         'doctors' => DoctorController::class,
-        'surgery' => SurgeryController::class,
+        'medical_records' => MedicalRecordController::class,
+        'animals_category' => AnimalCategoryController::class,
         'surgeries_category' => SurgeryCategoryController::class,
+        'vaccinations_category' => VaccinationCategoryController::class,
+        'medicines_category' => MedicineCategoryController::class,
+        'surgeries' => SurgeryController::class,
+        'medicines' => MedicineController::class,
+        'vaccinations' => VaccinationController::class
     ]);
+
+    Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
 });
 
 Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);
@@ -51,8 +62,8 @@ Route::middleware(['auth:sanctum', 'role:admin', 'status'])->group(function () {
     Route::get('check', function () {
         return 'Yes, I am Admin';
     });
-    Route::get('users', [AuthController::class, 'index']);
 });
+Route::get('users', [AuthController::class, 'index']);
 
 // Fallback route for handling 404 errors
 Route::fallback(function () {

@@ -24,7 +24,7 @@ class CreateDoctor extends CreateRecord
 
         // Save doctor extra info data
         return Doctor::create([
-            'user_id' => $user->id, // Using the user_id from the newly created user
+            'user_id' => $user->id,
             'specialization' => $data['specialization'],
             'work_start_time' => $data['work_start_time'],
             'work_end_time' => $data['work_end_time'],

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SurgeryCategory;
+use App\traits\ResponseTrait;
 use Illuminate\Http\Request;
 
 class SurgeryCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    use ResponseTrait;
     public function index()
     {
-        return 'surgery category';
+        $surgeries = SurgeryCategory::all();
+        return $this->success($surgeries);
     }
 
     /**
@@ -19,7 +20,9 @@ class SurgeryCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $surgery = SurgeryCategory::create($request->all());
+
+        return $this->success($surgery);
     }
 
     /**
@@ -27,7 +30,8 @@ class SurgeryCategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $surgery = SurgeryCategory::find($id);
+        return $this->success($surgery);
     }
 
     /**
@@ -35,7 +39,9 @@ class SurgeryCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $surgery = SurgeryCategory::find($id);
+        $surgery->update($request->all());
+        return $this->success($surgery);
     }
 
     /**
@@ -43,6 +49,8 @@ class SurgeryCategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $surgery = SurgeryCategory::find($id);
+        $surgery->delete();
+        return $this->success($surgery);
     }
 }

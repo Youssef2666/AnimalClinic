@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('vaccinations', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(VaccinationCategory::class);
-            $table->foreignIdFor(Doctor::class);
+            $table->foreignIdFor(Doctor::class, 'user_id');
             $table->foreignIdFor(MedicalRecord::class);
             $table->date('vaccination_date');
             $table->text('notes')->nullable();

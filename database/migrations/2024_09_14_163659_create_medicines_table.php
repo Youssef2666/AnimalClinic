@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Doctor::class);
+            $table->foreignIdFor(Doctor::class, 'user_id');
             $table->foreignIdFor(MedicalRecord::class);
             $table->foreignIdFor(MedicineCategory::class);
             $table->string('description')->nullable();            

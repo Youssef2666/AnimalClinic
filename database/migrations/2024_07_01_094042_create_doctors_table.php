@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('specialization')->nullable();
             $table->time('work_start_time');
             $table->time('work_end_time');
-            $table->enum('gender', ['male', 'female'])->default('male');
+            // $table->enum('gender', ['male', 'female'])->default('male');
+            $table->float('cost');
             $table->timestamps();
         });
     }

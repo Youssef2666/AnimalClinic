@@ -12,7 +12,13 @@ class MedicineCategory extends Model
     protected $fillable = [
         'name',
         'description',
-        'cost',
+        'cost'
     ];
 
+    public function medicines()
+    {
+        return $this->hasMany(Medicine::class);
+    }
+
+    
 }

@@ -17,8 +17,16 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Youssef',
-            'email' => 'youssef1@gmail.com',
+            'email' => 'youssef@gmail.com',
             'password' => '12345678',
+        ]);
+        $this->call([
+            SurgeryCategorySeeder::class,
+            MedicineCategorySeeder::class,
+            VaccinationCategorySeeder::class,
+            MedicineSeeder::class,
+            SurgerySeeder::class,
+            VaccinationSeeder::class
         ]);
     }
 }
