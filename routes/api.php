@@ -11,6 +11,7 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\SurgeryController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\VaccinationController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\AnimalCategoryController;
@@ -49,9 +50,11 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
         'medicines_category' => MedicineCategoryController::class,
         'surgeries' => SurgeryController::class,
         'medicines' => MedicineController::class,
-        'vaccinations' => VaccinationController::class
+        'vaccinations' => VaccinationController::class,
+        'appointments' => AppointmentController::class
     ]);
     Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
+    Route::get('appointments/{id}/doctor', [AppointmentController::class, 'getDoctorAppointments']);
 });
 
 Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);

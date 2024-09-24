@@ -69,10 +69,14 @@ class DoctorResource extends Resource
                         ->seconds(false)
                         ->required(),
 
-                    Select::make('gender')
-                        ->label('Gender')
-                        ->options(array_column(GenderStatus::cases(), 'name', 'value'))
+                    TextInput::make('cost')
+                        ->label('Hour Cost')
                         ->required(),
+
+                    // Select::make('gender')
+                    //     ->label('Gender')
+                    //     ->options(array_column(GenderStatus::cases(), 'name', 'value'))
+                    //     ->required(),
                 ])
                 ->columns(2),
                 // Select::make('user_id')
