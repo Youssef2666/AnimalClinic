@@ -24,6 +24,7 @@ class AnimalResource extends JsonResource
             'animal_type' => $this->animal_type,
             'user' => new UserResource($this->whenLoaded('user')),
             'category' => new AnimalCategoryResource($this->whenLoaded('category')),
+            'appointments' => $this->whenLoaded('appointments'),
         ];
     }
 }
