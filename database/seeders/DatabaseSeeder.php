@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
             VaccinationCategorySeeder::class,
             MedicineSeeder::class,
             SurgerySeeder::class,
-            VaccinationSeeder::class
+            VaccinationSeeder::class,
+            ProductCategorySeeder::class
         ]);
     }
 }

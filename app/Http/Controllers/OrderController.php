@@ -28,7 +28,7 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id' => Auth::id(),
             'order_date' => $request->order_date,
-            'status' => OrderStatus::PENDING->value,
+            'status' => OrderStatus::CONFIRMED->value,
         ]);
         return $this->success($order);
     }

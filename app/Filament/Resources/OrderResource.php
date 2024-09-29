@@ -3,15 +3,18 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\Order;
 use Filament\Forms\Form;
 use App\Enums\OrderStatus;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Support\Colors\Color;
 use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Resources\OrderResource\RelationManagers\ProductsRelationManager;
 
 class OrderResource extends Resource
 {
@@ -33,14 +36,44 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('user.name'),
-                TextColumn::make('order_date'),
-                TextColumn::make('status'), // Add status column if needed
+                TextColumn::make('order_date')->sortable(),
+                TextColumn::make('status')
+    ->badge()
+    ->color(function ($state) {
+        return match ($state) {
+            OrderStatus::DELIVERED->value => 'primary',
+            OrderStatus::CONFIRMED->value => Color::Emerald, 
+            OrderStatus::CANCELED->value => 'danger',   
+            default => 'secondary',                     
+        };
+    }),
+    TextColumn::make('total_price') // Adding the total price column
+    ->label('Total Price')
+    ->getStateUsing(fn(Order $record) => $record->total_price) // Accessing the attribute from the model
+    ->sortable(),
             ])
             ->filters([
                 // Add filters here
             ])
-            ->actions([                
-                Tables\Actions\EditAction::make(), // Keep the Edit action
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Action::make('changeStatus')
+    ->label('Change Status')
+    ->icon('heroicon-s-pencil')
+    ->form([
+        Forms\Components\Select::make('status')
+            ->label('Order Status')
+            ->options(
+                collect(OrderStatus::cases())->mapWithKeys(fn(OrderStatus $status) => [
+                    $status->value => $status->label()
+                ])->toArray()
+            )
+            ->required(),
+                ])
+                ->action(function (Order $record, array $data) {
+                    $record->update(['status' => $data['status']]);
+                })
+                ->visible(fn (Order $record) => $record->status !== OrderStatus::DELIVERED->value)           
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -52,7 +85,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Define relations here
+            ProductsRelationManager::class
         ];
     }
 

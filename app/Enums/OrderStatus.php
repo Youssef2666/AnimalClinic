@@ -5,8 +5,7 @@ namespace App\Enums;
 use ReflectionEnum;
 enum OrderStatus : string
 {
-    case PENDING = 'pending';
-    case COMPLETED = 'completed';
+    case DELIVERED = 'delivered';
     case CONFIRMED = 'confirmed';
     case CANCELED = 'canceled';
 
@@ -18,8 +17,7 @@ enum OrderStatus : string
     public function label(): string
     {
         return match ($this) {
-            self::PENDING => 'Pending',
-            self::COMPLETED => 'Completed',
+            self::DELIVERED => 'Delivered',
             self::CONFIRMED => 'Confirmed',
             self::CANCELED => 'Canceled',
         };

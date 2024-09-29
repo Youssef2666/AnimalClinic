@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class);
             $table->date('order_date');
-            $table->enum('status', array_column(OrderStatus::cases(), 'value'));
+            $table->enum('status', array_column(OrderStatus::cases(), 'value'))->default(OrderStatus::CONFIRMED->value);
             $table->timestamps();
         });
     }
