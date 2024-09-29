@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ZoomController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SurgeryController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\PasswordController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\AnimalCategoryController;
 use App\Http\Controllers\SurgeryCategoryController;
 use App\Http\Controllers\MedicineCategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VaccinationCategoryController;
 
 Route::get('/test',function(){
@@ -51,10 +53,13 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
         'surgeries' => SurgeryController::class,
         'medicines' => MedicineController::class,
         'vaccinations' => VaccinationController::class,
-        'appointments' => AppointmentController::class
+        'appointments' => AppointmentController::class,
+        'products' => ProductController::class,
+        'orders' => OrderController::class,
     ]);
     Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
     Route::get('appointments/{id}/doctor', [AppointmentController::class, 'getDoctorAppointments']);
+    Route::post('orders/{id}/add-products', [OrderController::class, 'addProductsToOrder']);
 });
 
 Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);

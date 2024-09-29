@@ -11,7 +11,6 @@ use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 
@@ -32,13 +31,22 @@ class AppointmentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->query(fn (Builder $query) => $query->where('user_id', Auth::id()))
+        //     ->query(function (Builder $query) {
+        //     return $query->where('user_id', fn () => Auth::id());
+        // })
             ->columns([
                 TextColumn::make('id'),
+                TextColumn::make('status'),
+                TextColumn::make('interview'),
                 TextColumn::make('animal.name'),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('User Appointments')  // Define a custom filter
+                    // ->query(function (Builder $query) {
+                    //     // Automatically filter based on the authenticated user
+                    //     return $query->where('user_id', Auth::id());
+                    // })
+                    // ->default(true)
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -86,6 +86,7 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+
     public function isAdmin()
     {
         return $this->role === 'admin';
@@ -111,12 +112,22 @@ class User extends Authenticatable implements FilamentUser
     }
 
     public function scopeDoctor($query)
-{
-    return $query->where('role', 'doctor'); // Adjust as needed
-}
+    {
+        return $query->where('role', 'doctor'); // Adjust as needed
+    }
 
-public function animals(){
-    return $this->hasMany(Animal::class);
-}
+    public function animals(){
+        return $this->hasMany(Animal::class);
+    }
+
+    public function favouriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favourite_products');
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
+
 
 }

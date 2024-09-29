@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('stock');
             $table->string('description')->nullable();
             $table->string('image')->nullable();
-            $table->foreignIdFor(ProductCategory::class);     
+            $table->foreignIdFor(ProductCategory::class, 'product_category_id');     
             $table->timestamps();
         });
     }

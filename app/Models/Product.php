@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $fillable = [
         'name',
-        'category_id',
+        'product_category_id',
         'price',
         'stock',
         'description',
@@ -20,6 +20,17 @@ class Product extends Model
 
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class);
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
+
+    public function usersWhoFavourited()
+    {
+        return $this->belongsToMany(User::class, 'favourite_products');
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)->withPivot('quantity', 'price_at_purchase')->withTimestamps();
+    }
+
 }

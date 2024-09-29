@@ -5,12 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use Faker\Provider\ar_EG\Text;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -29,11 +31,12 @@ class ProductResource extends Resource
                 ->required(),
                 TextInput::make('price')
                 ->required(),
-                Select::make('category.name')
+                Select::make('product_category_id')
+                ->relationship('category', 'name')
                 ->required()
                 ->label('Product Category Name'),
-                TextInput::make('description')
-
+                TextInput::make('description'),
+                TextInput::make('stock')
             ]);
     }
 
@@ -41,7 +44,13 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                ->searchable(),
+                TextColumn::make('price')
+                ->searchable(),
+                TextColumn::make('category.name')
+                ->searchable(),
+                TextColumn::make('stock')
             ])
             ->filters([
                 //

@@ -17,7 +17,7 @@ class AppointmentController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $appointments = Appointment::with('zoomAppointment')->get();
+        $appointments = Appointment::with('zoomAppointment')->withoutGlobalScope('user_appointments')->get();
         return $this->success($appointments, 'Appointments retrieved successfully', 200);
     }
 

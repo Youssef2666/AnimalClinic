@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Appointment extends Model
 {
@@ -32,5 +34,21 @@ class Appointment extends Model
     public function zoomAppointment()
     {
         return $this->hasOne(ZoomMeeting::class);
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('user_appointments', function (Builder $builder) {
+            // Check if the user is authenticated
+            if (Auth::check()) {
+                $user = Auth::user();
+
+                // Apply the filter based on the role in the users table
+                if ($user->role !== 'Admin') {
+                    // Filter appointments by the logged-in user's ID if the user is not an admin
+                    $builder->where('user_id', $user->id);
+                }
+            }
+        });
     }
 }
