@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Youssef',
             'email' => 'youssef@gmail.com',
             'password' => '12345678',
+            'role' => 'admin'
         ]);
         $this->call([
             SurgeryCategorySeeder::class,

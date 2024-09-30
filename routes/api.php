@@ -19,7 +19,10 @@ use App\Http\Controllers\AnimalCategoryController;
 use App\Http\Controllers\SurgeryCategoryController;
 use App\Http\Controllers\MedicineCategoryController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SadadController;
 use App\Http\Controllers\VaccinationCategoryController;
+use Faker\Provider\ar_EG\Payment;
 
 Route::get('/test',function(){
     return "GOOOOOOOOOOOO";
@@ -79,3 +82,13 @@ Route::fallback(function () {
 
 // Public route for ZoomController
 Route::get('zoom', [ZoomController::class, 'index']);
+
+
+//adfali
+Route::post('adfali', [PaymentController::class, 'adfali']);
+Route::post('adfali/confirm', [PaymentController::class, 'confirmPayment']);
+
+
+//sadad
+Route::post('sadad', [SadadController::class, 'sadad']);
+Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);

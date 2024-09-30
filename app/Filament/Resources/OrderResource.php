@@ -15,12 +15,20 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Support\Colors\Color;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers\ProductsRelationManager;
+use App\Filament\Resources\OrderResource\Widgets\OrderOverview;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            OrderOverview::class
+        ];
+    }
 
     public static function form(Form $form): Form
     {
@@ -34,8 +42,8 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('user.name'),
+                TextColumn::make('id')->searchable()->sortable(),
+                TextColumn::make('user.name')->searchable()->sortable(),
                 TextColumn::make('order_date')->sortable(),
                 TextColumn::make('status')
     ->badge()
@@ -70,6 +78,7 @@ class OrderResource extends Resource
             )
             ->required(),
                 ])
+                ->icon('heroicon-s-check-badge')
                 ->action(function (Order $record, array $data) {
                     $record->update(['status' => $data['status']]);
                 })
@@ -97,4 +106,11 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
+
+    public static function getWidgets(): array
+{
+    return [
+       OrderOverview::class,
+    ];
+}
 }
