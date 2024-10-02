@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\DoctorResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DoctorResource\RelationManagers;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ImageColumn;
 
 class DoctorResource extends Resource
 {
@@ -73,6 +75,8 @@ class DoctorResource extends Resource
                         ->label('Hour Cost')
                         ->required(),
 
+                    FileUpload::make('image')
+
                     // Select::make('gender')
                     //     ->label('Gender')
                     //     ->options(array_column(GenderStatus::cases(), 'name', 'value'))
@@ -97,6 +101,7 @@ class DoctorResource extends Resource
                 TextColumn::make('user.name')
                 ->label('Doctor Name'),
                 TextColumn::make('specialization'),
+                ImageColumn::make('image')
             ])
             ->filters([
                 //

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('work_end_time');
             // $table->enum('gender', ['male', 'female'])->default('male');
             $table->float('cost');
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

@@ -63,6 +63,8 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
     Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
     Route::get('appointments/{id}/doctor', [AppointmentController::class, 'getDoctorAppointments']);
     Route::post('orders/{id}/add-products', [OrderController::class, 'addProductsToOrder']);
+    Route::post('products/{id}/favorite', [ProductController::class, 'putProductInFavorite']);
+    Route::get('productss/favorite/get', [ProductController::class, 'getMyFavoriteProducts']);
 });
 
 Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);

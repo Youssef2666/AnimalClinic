@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('age')->comment('age in months');
             $table->float('weight');
             $table->enum('gender', ['male', 'female'])->default('male');
-            $table->string('backColor')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

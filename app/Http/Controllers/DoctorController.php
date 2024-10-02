@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDoctorRequest;
-use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
 use App\traits\ResponseTrait;
 use Illuminate\Http\Request;
@@ -14,8 +13,13 @@ class DoctorController extends Controller
     public function index()
     {
         try {
-            $doctors = Doctor::with('user')->get();
-            return DoctorResource::collection($doctors);
+            $doctors = Doctor::with('user')->get()->map(function ($doctor) {
+                $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
+                $doctor->user_name = $doctor->user->name; // Optionally include user's name if needed
+                return $doctor;
+            });
+
+            return $this->success($doctors);
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());
         }
@@ -38,10 +42,22 @@ class DoctorController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        $doctor = Doctor::findOrFail($id);
+{
+    try {
+        $doctor = Doctor::with('user')->findOrFail($id);
+
+        // Add image URL to the doctor object
+        $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
+
+        // Optionally include user's name
+        $doctor->user_name = $doctor->user->name;
+
         return $this->success($doctor);
+    } catch (\Throwable $th) {
+        return $this->error($th->getMessage());
     }
+}
+
 
     /**
      * Update the specified resource in storage.

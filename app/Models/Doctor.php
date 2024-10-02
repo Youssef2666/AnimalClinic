@@ -18,6 +18,7 @@ class Doctor extends Model
         'work_start_time',
         'work_end_time',
         'cost',
+        'image'
     ];
 
     protected $casts = [

@@ -10,7 +10,7 @@ class SadadController extends Controller
     public function sadad(Request $request){
         $mobileNumber = '0913632323'; // Mobile number should start with 09
         $birthYear = '2001'; // Birth year
-        $amount = $request->amount; // amount in float format
+        $amount = $request->amount; 
 
         try {
             $api = new PlutuSadad;

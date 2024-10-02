@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use Filament\Panel;
 use App\Models\Animal;
-use Laravel\Sanctum\HasApiTokens;
-use Laravel\Jetstream\HasProfilePhoto;
-use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -21,12 +21,11 @@ class User extends Authenticatable implements FilamentUser
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
     }
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -37,7 +36,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'status',
-        'role'
+        'role',
     ];
 
     public const ROLES = [
@@ -46,10 +45,10 @@ class User extends Authenticatable implements FilamentUser
         'doctor' => 'Doctor',
         'employee' => 'Employee',
     ];
-    
+
     public const STATUS = [
         'InActive' => 0,
-        'Active' => 1,  
+        'Active' => 1,
     ];
 
     /**
@@ -86,7 +85,6 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-
     public function isAdmin()
     {
         return $this->role === 'admin';
@@ -116,18 +114,21 @@ class User extends Authenticatable implements FilamentUser
         return $query->where('role', 'doctor'); // Adjust as needed
     }
 
-    public function animals(){
+    public function animals()
+    {
         return $this->hasMany(Animal::class);
     }
 
-    public function favouriteProducts()
+    public function favoriteProducts()
     {
-        return $this->belongsToMany(Product::class, 'favourite_products');
+        return $this->belongsToMany(Product::class, 'favorite_products');
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 
+    
 
 }

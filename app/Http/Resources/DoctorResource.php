@@ -21,6 +21,7 @@ class DoctorResource extends JsonResource
             'work_start_time' => $this->work_start_time,
             'work_end_time' => $this->work_end_time,
             'cost' => $this->cost,
+            'image' => $this->image,
             // 'gender' => $this->gender instanceof GenderStatus ? $this->gender->value : $this->gender,
         ];
     }

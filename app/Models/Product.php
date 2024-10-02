@@ -23,14 +23,13 @@ class Product extends Model
         return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
-    public function usersWhoFavourited()
-    {
-        return $this->belongsToMany(User::class, 'favourite_products');
-    }
-
     public function orders()
     {
         return $this->belongsToMany(Order::class)->withPivot('quantity', 'price_at_purchase')->withTimestamps();
     }
 
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(User::class, 'favorite_products');
+    }
 }
