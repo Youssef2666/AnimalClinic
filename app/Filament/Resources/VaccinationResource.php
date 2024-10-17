@@ -22,6 +22,8 @@ use App\Filament\Resources\VaccinationResource\RelationManagers;
 class VaccinationResource extends Resource
 {
     protected static ?string $model = Vaccination::class;
+    protected static ?string $modelLabel =  'تطعيم';
+    protected static ?string $pluralModelLabel = 'التطعيمات';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -31,6 +33,7 @@ class VaccinationResource extends Resource
             ->schema([
                 Select::make('vaccination_category_id')
                 ->relationship('vaccinationCategory', 'name')
+                ->label('اسم التطعيم')
                 ->required(),
 
                 Hidden::make('user_id')
@@ -38,13 +41,15 @@ class VaccinationResource extends Resource
                 
                 Select::make('medical_record_id')
                 ->relationship('medicalRecord', 'notes')
+                ->label('السجل الصحي')
                 ->required(),
                 
                 DateTimePicker::make('vaccination_date')
-                ->label('Vaccination Date')
+                ->label('تاريخ التطعيم')
                 ->required(),
 
                 TextInput::make('notes')
+                ->label('ملاحظات'),
             ]);
     }
 
@@ -53,15 +58,15 @@ class VaccinationResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('vaccinationCategory.name')
-                ->label('Vaccination Name')
+                ->label('اسم التطعيم')
                 ->searchable(),
 
                 TextColumn::make('vaccinationCategory.cost')
-                ->label('Vaccination Cost')
+                ->label('التكلفة')
                 ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
-                ->label('Medical Record ID')
+                ->label('رقم السجل الصحي')
                 ->searchable(),
 
             ])

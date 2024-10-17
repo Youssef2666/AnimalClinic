@@ -24,6 +24,8 @@ use App\Filament\Resources\UserResource\RelationManagers;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
+    protected static ?string $modelLabel =  'مستخدم';
+    protected static ?string $pluralModelLabel = 'المستخدمين';
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
@@ -31,9 +33,9 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('email')->email()->required()->unique(),
-                TextInput::make('password')->password()->visibleOn('create'),
+                TextInput::make('name')->required()->sortable()->label('اسم المستخدم'),
+                TextInput::make('email')->email()->required()->unique()->label('البريد الالكتروني'),
+                TextInput::make('password')->password()->visibleOn('create')->label('كلمة المرور'),
                 //the key will be saved in db and value will be shown in the select
                 Select::make('role')->options([
                     'doctor' => 'Doctor',
@@ -47,17 +49,20 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                ->label('اسم المستخدم')
                 ->searchable()
                 ->sortable(),
-                TextColumn::make('email'),
-                TextColumn::make('role')->label('Role'),
-                TextColumn::make('status')->label('Status'),
+                TextColumn::make('email')
+                ->label('البريد الالكتروني')
+                ->searchable(),
+                TextColumn::make('role')->label('الدور')->searchable()->sortable(),
+                TextColumn::make('status')->label('الحالة')->searchable()->sortable(),
             ])
             ->filters([
                 SelectFilter::make('role')->options([
-                    'admin' => 'Admin',
-                    'doctor' => 'Doctor',
-                    'employee' => 'Employee',
+                    'admin' => 'مدير',
+                    'doctor' => 'طبيب',
+                    'employee' => 'موظف',
                 ])
             ])
             ->actions([

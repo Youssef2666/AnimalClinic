@@ -20,6 +20,8 @@ use App\Filament\Resources\OrderResource\Widgets\OrderOverview;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
+    protected static ?string $modelLabel =  'طلب';
+    protected static ?string $pluralModelLabel = 'طلبات';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -42,10 +44,10 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->searchable()->sortable(),
-                TextColumn::make('user.name')->searchable()->sortable(),
-                TextColumn::make('order_date')->sortable(),
-                TextColumn::make('status')
+                TextColumn::make('id')->searchable()->sortable()->label('رقم الطلب'),
+                TextColumn::make('user.name')->searchable()->sortable()->label('اسم المستخدم'),
+                TextColumn::make('order_date')->sortable()->label('تاريخ الطلب'),
+                TextColumn::make('status')->label('الحالة')
     ->badge()
     ->color(function ($state) {
         return match ($state) {
@@ -56,7 +58,7 @@ class OrderResource extends Resource
         };
     }),
     TextColumn::make('total_price') // Adding the total price column
-    ->label('Total Price')
+    ->label('السعر الكلي')
     ->getStateUsing(fn(Order $record) => $record->total_price) // Accessing the attribute from the model
     ->sortable(),
             ])
@@ -66,11 +68,11 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Action::make('changeStatus')
-    ->label('Change Status')
+    ->label('تغيير الحالة')
     ->icon('heroicon-s-pencil')
     ->form([
         Forms\Components\Select::make('status')
-            ->label('Order Status')
+            ->label('الحالة')
             ->options(
                 collect(OrderStatus::cases())->mapWithKeys(fn(OrderStatus $status) => [
                     $status->value => $status->label()

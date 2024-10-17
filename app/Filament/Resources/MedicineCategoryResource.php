@@ -18,8 +18,10 @@ use App\Filament\Resources\MedicineCategoryResource\RelationManagers;
 class MedicineCategoryResource extends Resource
 {
     protected static ?string $model = MedicineCategory::class;
+    protected static ?string $modelLabel =  'دواء';
+    protected static ?string $pluralModelLabel = 'أدوية';
 
-    protected static ?string $navigationGroup = 'Categories';
+    protected static ?string $navigationGroup = 'الأصناف';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -29,13 +31,13 @@ class MedicineCategoryResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
-                ->label('Medicine Category Name'),
+                ->label('اسم الدواء'),
 
                 TextInput::make('description')
-                ->label('Description'),
+                ->label('وصف'),
 
                 TextInput::make('cost')
-                ->label('Cost'),
+                ->label('سعر الدواء'),
             ]);
     }
 
@@ -44,14 +46,17 @@ class MedicineCategoryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                ->label('اسم الدواء')
                 ->searchable()
                 ->sortable(),
 
                 TextColumn::make('description')
+                ->label('وصف')
                 ->searchable()
                 ->sortable(),
                 
                 TextColumn::make('cost')
+                ->label('سعر الدواء')
                 ->searchable()
                 ->sortable(),
             ])

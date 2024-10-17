@@ -19,6 +19,8 @@ use App\Filament\Resources\MedicalRecordResource\RelationManagers\VaccinationsRe
 class MedicalRecordResource extends Resource
 {
     protected static ?string $model = MedicalRecord::class;
+    protected static ?string $modelLabel =  'سجل صحي';
+    protected static ?string $pluralModelLabel = 'سجلات صحية';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -35,7 +37,7 @@ class MedicalRecordResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('notes')
+                TextInput::make('notes')->label('ملاحظات'),
             ]);
     }
 
@@ -43,9 +45,9 @@ class MedicalRecordResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->searchable(),
-                TextColumn::make('animal.name'),
-                TextColumn::make('notes'),
+                TextColumn::make('id')->searchable()->sortable()->label('رقم السجل'),
+                TextColumn::make('animal.name')->label('اسم الحيوان'),
+                TextColumn::make('notes')->label('ملاحظات'),
             ])
             ->filters([])
             ->actions([
@@ -67,7 +69,6 @@ class MedicalRecordResource extends Resource
     {
         return [
             'index' => Pages\ListMedicalRecords::route('/'),
-            // Commented out the create route if it's disabled entirely
             // 'create' => Pages\CreateMedicalRecord::route('/create'),
             'edit' => Pages\EditMedicalRecord::route('/{record}/edit'),
         ];

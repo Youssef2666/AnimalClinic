@@ -17,6 +17,8 @@ use App\Filament\Resources\AppointmentResource\RelationManagers;
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
+    protected static ?string $modelLabel =  'موعد';
+    protected static ?string $pluralModelLabel = 'المواعيد';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -35,10 +37,11 @@ class AppointmentResource extends Resource
         //     return $query->where('user_id', fn () => Auth::id());
         // })
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('status'),
-                TextColumn::make('interview'),
-                TextColumn::make('animal.name'),
+                TextColumn::make('id')->sortable()->searchable()->label('رقم الموعد'),
+                TextColumn::make('status')->label('الحالة'),
+                TextColumn::make('interview')->label('نوع المقابلة'),
+                TextColumn::make('date')->label('تاريخ المقابلة'),
+                TextColumn::make('animal.name')->label('اسم الحيوان'),
             ])
             ->filters([
                 Tables\Filters\Filter::make('User Appointments')  // Define a custom filter

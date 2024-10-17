@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+    protected static ?string $modelLabel =  'منتج';
+    protected static ?string $pluralModelLabel = 'منتجات';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -30,16 +32,22 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')
+                ->label('اسم المنتج')
                 ->required(),
+                
                 TextInput::make('price')
+                ->label('سعر المنتج')
                 ->required(),
                 Select::make('product_category_id')
                 ->relationship('category', 'name')
                 ->required()
-                ->label('Product Category Name'),
-                TextInput::make('description'),
-                TextInput::make('stock'),
+                ->label('فئة المنتج'),
+                TextInput::make('description')
+                ->label('وصف'),
+                TextInput::make('stock')
+                ->label('الكمية'),
                 FileUpload::make('image')
+                ->label('صورة المنتج')
             ]);
     }
 
@@ -48,13 +56,18 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                ->label('اسم المنتج')
                 ->searchable(),
                 TextColumn::make('price')
+                ->label('سعر المنتج')
                 ->searchable(),
                 TextColumn::make('category.name')
+                ->label('فئة المنتج')
                 ->searchable(),
-                TextColumn::make('stock'),
-                ImageColumn::make('image'),
+                TextColumn::make('stock')
+                ->label('الكمية'),
+                ImageColumn::make('image')
+                ->label('صورة المنتج'),
             ])
             ->filters([
                 //

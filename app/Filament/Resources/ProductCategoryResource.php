@@ -17,8 +17,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductCategoryResource extends Resource
 {
     protected static ?string $model = ProductCategory::class;
+    protected static ?string $modelLabel =  'صنف منتج';
+    protected static ?string $pluralModelLabel = 'منتجات';
 
-    protected static ?string $navigationGroup = 'Categories';
+    protected static ?string $navigationGroup = 'الأصناف';
 
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -29,9 +31,10 @@ class ProductCategoryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                 ->required()
-                ->label('Product Category Name'),
+                ->label('الاسم'),
 
                 Forms\Components\TextInput::make('description')
+                ->label('وصف')
                 ->required(),
             ]);
     }
@@ -42,10 +45,12 @@ class ProductCategoryResource extends Resource
             ->columns([
                 TextColumn::make('name')
                 ->searchable()
+                ->label('الاسم')
                 ->sortable(),
 
                 TextColumn::make('description')
                 ->searchable()
+                ->label('وصف')
                 ->sortable(),
             ])
             ->filters([

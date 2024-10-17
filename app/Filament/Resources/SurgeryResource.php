@@ -24,6 +24,8 @@ use App\Filament\Resources\SurgeryResource\RelationManagers;
 class SurgeryResource extends Resource
 {
     protected static ?string $model = Surgery::class;
+    protected static ?string $modelLabel =  'عملية';
+    protected static ?string $pluralModelLabel = 'العمليات';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -33,6 +35,7 @@ class SurgeryResource extends Resource
             ->schema([
                 Select::make('surgery_category_id')
                 ->relationship('surgeryCategory', 'name')
+                ->label('اسم العملية')
                 ->required(),
                 
                 Hidden::make('user_id')
@@ -40,12 +43,15 @@ class SurgeryResource extends Resource
                 
                 Select::make('medical_record_id')
                 ->relationship('medicalRecord', 'notes')
+                ->label('رقم السجل الصحي')
                 ->required(),
 
                 DateTimePicker::make('surgery_date')
+                ->label('تاريخ العملية')
                 ->required(),
 
                 TextInput::make('notes')
+                ->label('ملاحظات'),
             ]);
     }
 
@@ -54,19 +60,19 @@ class SurgeryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('surgeryCategory.name')
-                ->label('Surgery Name')
+                ->label('اسم العملية')
                 ->searchable(),
 
                 TextColumn::make('surgeryCategory.cost')
-                ->label('Surgery Cost')
+                ->label('سعر العملية')
                 ->searchable(),
 
                 TextColumn::make('surgery_date')
-                ->label('Surgery Date')
+                ->label('تاريخ العملية')
                 ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
-                ->label('Medical Record ID')
+                ->label('رقم السجل الصحي')
                 ->searchable(),
 
             ])

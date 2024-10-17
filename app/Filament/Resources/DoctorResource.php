@@ -21,6 +21,8 @@ use Filament\Tables\Table;
 class DoctorResource extends Resource
 {
     protected static ?string $model = Doctor::class;
+    protected static ?string $modelLabel =  'طبيب';
+    protected static ?string $pluralModelLabel = 'الأطباء';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -31,27 +33,27 @@ class DoctorResource extends Resource
                 Section::make('Doctor Information')
                     ->schema([
                         TextInput::make('user.name')
-                            ->label('Doctor Name')
+                            ->label('اسم الطبيب')
                             ->required()
                             ->unique(table: User::class, column: 'name')
                             ->columnSpan(2),
 
                         TextInput::make('user.email')
-                            ->label('Doctor Email')
+                            ->label('البريد الالكتروني')
                             ->email()
-                            ->unique(table: User::class, column: 'email')
+                            ->unique(table: User::class, column: 'email', ignoreRecord: true)
                             ->required()
                             ->columnSpan(2),
 
                         TextInput::make('user.password')
-                            ->label('Password')
+                            ->label('كلمة المرور')
                             ->password()
                             ->required()
                             ->confirmed()
                             ->columnSpan(2),
 
                         TextInput::make('user.password_confirmation')
-                            ->label('Confirm Password')
+                            ->label('تأكيد كلمة المرور')
                             ->password()
                             ->required()
                             ->columnSpan(2),
@@ -62,29 +64,29 @@ class DoctorResource extends Resource
                 Section::make('Doctor Extra Information')
                     ->schema([
                         Select::make('specialization')
-                            ->label('Specialization')
+                            ->label('التخصص')
                             ->options(array_column(DoctorSpecializationStatus::cases(), 'name', 'value'))
                             ->enum(DoctorSpecializationStatus::class)
                             ->required(),
 
                         TextInput::make('cost')
-                            ->label('Hour Cost')
+                            ->label('سعر الساعة')
                             ->numeric()
                             ->required(),
 
                         TimePicker::make('work_start_time')
-                            ->label('Work Start Time')
+                            ->label('تاريخ بدء العمل')
                             ->seconds(false)
                             ->required(),
 
                         TimePicker::make('work_end_time')
-                            ->label('Work End Time')
+                            ->label('تاريخ نهاية العمل')
                             ->seconds(false)
                             ->required()
                             ->after('work_start_time'),
 
                         FileUpload::make('image')
-                        ->label('Doctor Image')
+                        ->label('صورة الطبيب')
                         ->image(),
 
                         // Select::make('gender')
@@ -109,9 +111,9 @@ class DoctorResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('user.name')
-                    ->label('Doctor Name'),
-                TextColumn::make('specialization'),
-                ImageColumn::make('image'),
+                    ->label('اسم الطبيب'),
+                TextColumn::make('specialization')->label('التخصص'),
+                ImageColumn::make('image')->label('صورة الطبيب'),
             ])
             ->filters([
                 //

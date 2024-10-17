@@ -23,18 +23,18 @@ class ListOrders extends ListRecords
     public function getTabs(): array
 {
     return [
-        'All' => Tab::make(),
+        'All' => Tab::make()->label( 'الكل'),
 
         'Delivered' => Tab::make()
-            ->label('Delivered')
+            ->label('تم التوصيل')
             ->query(fn (Builder $query) => $query->where('status', OrderStatus::DELIVERED->value)),
 
         'Confirmed' => Tab::make()
-            ->label('Confirmed')
+            ->label( 'تم التأكيد')
             ->query(fn (Builder $query) => $query->where('status', OrderStatus::CONFIRMED->value)),
 
         'Canceled' => Tab::make()
-            ->label('Canceled')
+            ->label('تم الالغاء')
             ->query(fn (Builder $query) => $query->where('status', OrderStatus::CANCELED->value)),
     ];
 }

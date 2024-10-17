@@ -19,6 +19,8 @@ use App\Filament\Resources\MedicineResource\RelationManagers;
 class MedicineResource extends Resource
 {
     protected static ?string $model = Medicine::class;
+    protected static ?string $modelLabel =  'دواء';
+    protected static ?string $pluralModelLabel = 'أدوية';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -27,16 +29,17 @@ class MedicineResource extends Resource
         return $form
             ->schema([
                 Select::make('category_id')  
-                ->relationship('category', 'name')  // Specify the relationship and display the 'name' field
+                ->relationship('category', 'name')
                 ->required()
-                ->label('Medicine Category'),
+                ->label('اسم الدواء'),
 
                 Select::make('medical_record_id')  
                 ->relationship('medicalRecord', 'notes')  
                 ->required()
-                ->label('Medical Record'),
+                ->label('رقم السجل الصحي'),
 
                 TextInput::make('description')
+                ->label('وصف'),
             ]);
     }
 
@@ -45,18 +48,19 @@ class MedicineResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('category.name')
-                ->label('Medicine Name')
+                ->label('اسم الدواء')
                 ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
-                ->label('Medical Record ID')
+                ->label('رقم السجل الصحي')
                 ->searchable(),
                 TextColumn::make('medicalRecord.notes')
-                ->label('Medical Record Notes')
+                ->label('ملاحظات')
                 ->searchable()
                 ->toggleable(),
 
                 TextColumn::make('description')
+                ->label('وصف')
                 ->searchable(),
 
             ])

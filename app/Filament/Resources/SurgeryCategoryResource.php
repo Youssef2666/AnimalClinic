@@ -18,8 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SurgeryCategoryResource extends Resource
 {
     protected static ?string $model = SurgeryCategory::class;
+    protected static ?string $modelLabel =  'عملية';
+    protected static ?string $pluralModelLabel = 'العمليات';
 
-    protected static ?string $navigationGroup = 'Categories';
+    protected static ?string $navigationGroup = 'الأصناف';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -29,13 +31,13 @@ class SurgeryCategoryResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
-                ->label('Surgery Category Name'),
+                ->label('اسم العملية'),
 
                 TextInput::make('description')
-                ->label('Description'),
+                ->label('وصف'),
 
                 TextInput::make('cost')
-                ->label('Cost'),
+                ->label('سعر العملية'),
             ]);
     }
 
@@ -44,13 +46,17 @@ class SurgeryCategoryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                ->label('اسم العملية')
                 ->searchable()
                 ->sortable(),
 
                 TextColumn::make('description')
+                ->label('وصف')
                 ->searchable()
                 ->sortable(),
+
                 TextColumn::make('cost')
+                ->label('سعر العملية')
                 ->searchable()
                 ->sortable(),
             ])

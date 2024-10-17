@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->brandName(fn() => Auth::user()->name ?? 'Admin Panel')
+            ->brandName(fn() => Auth::user()->name ?? 'Aleef')
             ->id('admin')
             ->path('admin')
             ->login()

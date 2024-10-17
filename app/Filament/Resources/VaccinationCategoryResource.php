@@ -18,8 +18,10 @@ use App\Filament\Resources\VaccinationCategoryResource\RelationManagers;
 class VaccinationCategoryResource extends Resource
 {
     protected static ?string $model = VaccinationCategory::class;
+    protected static ?string $modelLabel =  'تطعيم';
+    protected static ?string $pluralModelLabel = 'التطعيمات';
 
-    protected static ?string $navigationGroup = 'Categories';
+    protected static ?string $navigationGroup = 'الأصناف';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -29,10 +31,10 @@ class VaccinationCategoryResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
-                ->label('Vaccination Category Name'),
+                ->label('اسم التطعيم'),
 
                 TextInput::make('description')
-                ->label('Vaccination Category Name'),
+                ->label('وصف'),
 
             ]);
     }
@@ -42,10 +44,12 @@ class VaccinationCategoryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                ->label('اسم التطعيم')
                 ->searchable()
                 ->sortable(),
 
                 TextColumn::make('description')
+                ->label('وصف')
                 ->searchable()
                 ->sortable(),
             ])
