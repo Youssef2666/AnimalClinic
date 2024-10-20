@@ -12,7 +12,7 @@ class MedicalRecordController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $medicalRecords = MedicalRecord::with('surgeries', 'vaccinations', 'medicines.category')->get();
+        $medicalRecords = MedicalRecord::with('surgeries.surgeryCategory', 'vaccinations.vaccinationCategory', 'medicines.category')->get();
         return MedicalRecordResource::collection($medicalRecords);
     }
 

@@ -14,15 +14,15 @@ class AnimalCategorySeeder extends Seeder
     {
         $animals_category = [
             [
-                'name' => 'Dog',
+                'name' => 'كلب',
                 'description' => 'whoff.',
             ],
             [
-                'name' => 'Cat',
+                'name' => 'قط',
                 'description' => 'meow.',
             ],
             [
-                'name' => 'Bird',
+                'name' => 'طائر',
                 'description' => 'tweet.',
             ]
         ];

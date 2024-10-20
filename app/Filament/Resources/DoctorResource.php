@@ -21,7 +21,7 @@ use Filament\Tables\Table;
 class DoctorResource extends Resource
 {
     protected static ?string $model = Doctor::class;
-    protected static ?string $modelLabel =  'طبيب';
+    protected static ?string $modelLabel = 'طبيب';
     protected static ?string $pluralModelLabel = 'الأطباء';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -36,14 +36,19 @@ class DoctorResource extends Resource
                             ->label('اسم الطبيب')
                             ->required()
                             ->unique(table: User::class, column: 'name')
+                            ->visible(fn($livewire) => $livewire instanceof \App\Filament\Resources\DoctorResource\Pages\CreateDoctor)
                             ->columnSpan(2),
 
                         TextInput::make('user.email')
                             ->label('البريد الالكتروني')
-                            ->email()
-                            ->unique(table: User::class, column: 'email', ignoreRecord: true)
                             ->required()
-                            ->columnSpan(2),
+                            ->email()
+                            ->columnSpan(2)
+                            ->unique(
+                                table: User::class,
+                                column: 'email',
+                            )
+                            ->visible(fn($livewire) => $livewire instanceof \App\Filament\Resources\DoctorResource\Pages\CreateDoctor), // Apply unique only when creating
 
                         TextInput::make('user.password')
                             ->label('كلمة المرور')
@@ -86,8 +91,8 @@ class DoctorResource extends Resource
                             ->after('work_start_time'),
 
                         FileUpload::make('image')
-                        ->label('صورة الطبيب')
-                        ->image(),
+                            ->label('صورة الطبيب')
+                            ->image(),
 
                         // Select::make('gender')
                         //     ->label('Gender')
@@ -142,6 +147,14 @@ class DoctorResource extends Resource
             'create' => Pages\CreateDoctor::route('/create'),
             'edit' => Pages\EditDoctor::route('/{record}/edit'),
         ];
+    }
+    public function edit($record): void
+    {
+        // Ensure the 'user' relation is loaded when editing the Doctor
+        $record->load('user');
+
+        // Now pass the record to the form:
+        parent::edit($record);
     }
 
 }

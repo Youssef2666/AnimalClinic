@@ -31,5 +31,9 @@ class VaccinationSeeder extends Seeder
                 'notes' => 'Vaccines for Covid-19.',
             ]
         ];
+
+        foreach ($vaccinations as $vaccination) {
+            Vaccination::create($vaccination);
+        }
     }
 }

@@ -19,6 +19,8 @@ class MedicalRecordResource extends JsonResource
             'notes' => $this->notes,
             'animal' => new AnimalResource($this->whenLoaded('animal')),
             'medicines' => $this->whenLoaded('medicines'),
+            'surgeries' => $this->whenLoaded('surgeries'),
+            'vaccinations' => $this->whenLoaded('vaccinations'),
         ];
     }
 }

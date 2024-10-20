@@ -89,7 +89,7 @@ class AnimalController extends Controller
     }
 
     public function getUserAnimals(Request $request, $id){
-        $animals = Animal::with('appointments')->where('user_id', $id)->get();
+        $animals = Animal::with('appointments','category')->where('user_id', $id)->get();
         return AnimalResource::collection($animals);
     }
 

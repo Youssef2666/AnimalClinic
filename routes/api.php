@@ -94,3 +94,7 @@ Route::post('adfali/confirm', [PaymentController::class, 'confirmPayment']);
 //sadad
 Route::post('sadad', [SadadController::class, 'sadad']);
 Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);
+
+
+//FCM
+Route::get('fcm', [AuthController::class, 'sendNotification']);

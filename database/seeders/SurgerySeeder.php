@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Surgery;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class SurgerySeeder extends Seeder
 {
@@ -35,5 +36,9 @@ class SurgerySeeder extends Seeder
                 'notes' => 'Surgery related to brain damage.',
             ]
         ];
+
+        foreach ($surgeries as $surgery) {
+            Surgery::create($surgery);
+        }
     }
 }

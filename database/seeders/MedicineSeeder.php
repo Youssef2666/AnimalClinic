@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Medicine;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class MedicineSeeder extends Seeder
 {
@@ -26,5 +27,9 @@ class MedicineSeeder extends Seeder
                 'description' => 'Vitamins',
             ]
         ];
+
+        foreach ($medicines as $medicine) {
+            Medicine::create($medicine);
+        }
     }
 }

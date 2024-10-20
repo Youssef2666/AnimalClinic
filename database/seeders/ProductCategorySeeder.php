@@ -15,24 +15,24 @@ class ProductCategorySeeder extends Seeder
     {
         $product_category = [
             [
-                'name' => 'Dogs Food',
-                'description' => 'Food for your dogs.',
+                'name' => 'اكل كلاب',
+                'description' => 'الغذاء لكلابك.',
             ],
             [
-                'name' => 'Cats Food',
-                'description' => 'Medicines for your cats.',
+                'name' => 'اكل قطط',
+                'description' => 'أكل لقططك',
             ],
             [
-                'name' => 'Birds Food',
-                'description' => 'Vaccines for your birds.',
+                'name' => 'اكل طيور',
+                'description' => 'اكل طيور.',
             ],
             [
-                'name' => 'Fish Food',
-                'description' => 'Food for your fish.',
+                'name' => 'اكل سمك',
+                'description' => 'اكل سمك.',
             ],
             [
-                'name' => 'Medical Supplies',
-                'description' => 'Medicines for your pets.',
+                'name' => 'مستلزمات الطبية',
+                'description' => 'أدوية لحيواناتك الأليفة.',
             ]
         ];
         foreach ($product_category as $category) {

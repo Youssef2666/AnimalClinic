@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Appointment;
+use App\Enums\AppointmentStatus;
 use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\TextColumn;
@@ -38,7 +39,13 @@ class AppointmentResource extends Resource
         // })
             ->columns([
                 TextColumn::make('id')->sortable()->searchable()->label('رقم الموعد'),
-                TextColumn::make('status')->label('الحالة'),
+                TextColumn::make('status')->label('الحالة')->badge()->color(function ($state) {
+                    return match ($state) {
+                        AppointmentStatus::CONFIRMED->value => 'success',
+                        AppointmentStatus::CANCELED->value => 'danger',   
+                        default => 'secondary',                     
+                    };
+                }),
                 TextColumn::make('interview')->label('نوع المقابلة'),
                 TextColumn::make('date')->label('تاريخ المقابلة'),
                 TextColumn::make('animal.name')->label('اسم الحيوان'),

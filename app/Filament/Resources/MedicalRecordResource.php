@@ -46,6 +46,7 @@ class MedicalRecordResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->searchable()->sortable()->label('رقم السجل'),
+                TextColumn::make('animal.id')->label('رقم الحيوان'),
                 TextColumn::make('animal.name')->label('اسم الحيوان'),
                 TextColumn::make('notes')->label('ملاحظات'),
             ])

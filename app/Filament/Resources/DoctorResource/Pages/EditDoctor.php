@@ -25,8 +25,8 @@ class EditDoctor extends EditRecord
 
         // Populate the user fields in the form
         $data['user'] = [
-            'name' => $user->name,
-            'email' => $user->email,
+            // 'name' => $user->name,
+            // 'email' => $user->email,
             'password' => '', // Leave password empty to avoid pre-filling it
         ];
 
@@ -38,8 +38,8 @@ class EditDoctor extends EditRecord
         // Update user-related data
         $user = User::find($this->record->user_id);
         $user->update([
-            'name' => $data['user']['name'],
-            'email' => $data['user']['email'],
+            // 'name' => $data['user']['name'],
+            // 'email' => $data['user']['email'],
             // Check if password needs to be updated
             'password' => !empty($data['user']['password']) ? bcrypt($data['user']['password']) : $user->password,
         ]);

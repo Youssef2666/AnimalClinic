@@ -33,8 +33,8 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required()->sortable()->label('اسم المستخدم'),
-                TextInput::make('email')->email()->required()->unique()->label('البريد الالكتروني'),
+                TextInput::make('name')->required()->label('اسم المستخدم'),
+                TextInput::make('email')->email()->required()->unique(ignoreRecord: true)->label('البريد الالكتروني'),
                 TextInput::make('password')->password()->visibleOn('create')->label('كلمة المرور'),
                 //the key will be saved in db and value will be shown in the select
                 Select::make('role')->options([
