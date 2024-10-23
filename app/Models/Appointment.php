@@ -39,11 +39,9 @@ class Appointment extends Model
     protected static function booted()
     {
         static::addGlobalScope('user_appointments', function (Builder $builder) {
-            // Check if the user is authenticated
             if (Auth::check()) {
                 $user = Auth::user();
 
-                // Apply the filter based on the role in the users table
                 if ($user->role !== 'admin') {
                     // Filter appointments by the logged-in user's ID if the user is not an admin
                     $builder->where('user_id', $user->id);

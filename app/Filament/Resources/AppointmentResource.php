@@ -2,23 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use App\Models\Appointment;
 use App\Enums\AppointmentStatus;
-use Filament\Resources\Resource;
-use Illuminate\Support\Facades\Auth;
-use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\AppointmentResource\Pages;
-use App\Filament\Resources\AppointmentResource\RelationManagers;
+use App\Models\Appointment;
+use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+// use Filament\Forms\Components\TextInput;
 
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
-    protected static ?string $modelLabel =  'موعد';
+    protected static ?string $modelLabel = 'موعد';
     protected static ?string $pluralModelLabel = 'المواعيد';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -27,7 +27,27 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('animal_id') // Use 'animal_id' to reference the animal
+                    ->relationship('animal', 'name') // Load 'name' from the Animal model
+                    ->label('اسم الحيوان')
+                    ->required(),
+
+                Forms\Components\Select::make('status')
+                    ->label('الحالة')
+                    ->options(array_column(AppointmentStatus::cases(), 'name', 'value')),
+
+                TextInput::make('interview')
+                    ->label('نوع المقابلة')
+                    ->required(),
+
+                TextInput::make('date')
+                    ->label('تاريخ المقابلة')
+                    ->required(),
+
+                // Forms\Components\Select::make('zoomAppointment.meeting_id')
+                //     ->relationship('zoomAppointment', 'meeting_id')
+                //     ->label('رقم الجلسة')
+                //     ->required(),
             ]);
     }
 
@@ -42,24 +62,26 @@ class AppointmentResource extends Resource
                 TextColumn::make('status')->label('الحالة')->badge()->color(function ($state) {
                     return match ($state) {
                         AppointmentStatus::CONFIRMED->value => 'success',
-                        AppointmentStatus::CANCELED->value => 'danger',   
-                        default => 'secondary',                     
+                        AppointmentStatus::CANCELED->value => 'danger',
+                        default => 'secondary',
                     };
                 }),
                 TextColumn::make('interview')->label('نوع المقابلة'),
                 TextColumn::make('date')->label('تاريخ المقابلة'),
                 TextColumn::make('animal.name')->label('اسم الحيوان'),
+                TextColumn::make('zoomAppointment.meeting_id')->label('رقم الجلسة'),
             ])
             ->filters([
-                Tables\Filters\Filter::make('User Appointments')  // Define a custom filter
-                    // ->query(function (Builder $query) {
-                    //     // Automatically filter based on the authenticated user
-                    //     return $query->where('user_id', Auth::id());
-                    // })
-                    // ->default(true)
+                Tables\Filters\Filter::make('User Appointments'), // Define a custom filter
+                // ->query(function (Builder $query) {
+                //     // Automatically filter based on the authenticated user
+                //     return $query->where('user_id', Auth::id());
+                // })
+                // ->default(true)
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

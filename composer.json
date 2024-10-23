@@ -16,7 +16,8 @@
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
-        "plutu/plutu-laravel": "^1.1"
+        "plutu/plutu-laravel": "^1.1",
+        "predis/predis": "2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -32,7 +33,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Http/Helpers/Utilities.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

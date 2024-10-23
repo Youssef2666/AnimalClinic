@@ -52,12 +52,11 @@ class AppointmentController extends Controller
             'agenda' => 'test',
         ]);
 
-        // Save Zoom meeting details into the zoom_meetings table
-        $zoomData = $zoomMeeting['data']; // Access the 'data' key
+        $zoomData = $zoomMeeting['data'];
 
         $myZoom = ZoomMeeting::create([
             'appointment_id' => $appointment->id,
-            'meeting_id' => $zoomData['id'], // Extract 'id' from 'data'
+            'meeting_id' => $zoomData['id'], 
             'start_url' => $zoomData['start_url'],
             'join_url' => $zoomData['join_url'],
             'topic' => $zoomData['topic'],

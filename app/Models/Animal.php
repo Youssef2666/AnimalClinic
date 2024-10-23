@@ -35,6 +35,10 @@ class Animal extends Model
         return $this->hasMany(Appointment::class);
     }
 
+    public function zoomAppointment(){
+        return $this->hasManyThrough(ZoomMeeting::class, Appointment::class);
+    }
+
     public function medicalRecord(){
         return $this->hasOne(MedicalRecord::class);
     }

@@ -43,7 +43,6 @@ class User extends Authenticatable implements FilamentUser
         'user' => 'User',
         'admin' => 'Admin',
         'doctor' => 'Doctor',
-        'employee' => 'Employee',
     ];
 
     public const STATUS = [

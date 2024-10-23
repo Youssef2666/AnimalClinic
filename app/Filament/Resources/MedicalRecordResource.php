@@ -29,8 +29,7 @@ class MedicalRecordResource extends Resource
      */
     public static function canCreate(): bool
     {
-        // Allow creation only for admin users
-        return Auth::user()->isAdmin();  // Ensure 'role' field is present in the User model
+        return Auth::user()->isAdmin();
     }
 
     public static function form(Form $form): Form

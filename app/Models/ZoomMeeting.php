@@ -26,4 +26,18 @@ class ZoomMeeting extends Model
     {
         return $this->belongsTo(Appointment::class);
     }
+
+    public function animal()
+    {
+        return $this->hasOneThrough(
+            Animal::class,
+            Appointment::class,
+            'id', // Foreign key on the appointments table
+            'id', // Foreign key on the animals table
+            'appointment_id', // Local key on the zoom_meetings table
+            'animal_id' // Local key on the appointments table
+        );
+    }
+
+
 }
