@@ -64,7 +64,7 @@ class ZoomMeetingResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('meeting_id')->label('رقم الجلسة')->sortable()->searchable(),
-                TextColumn::make('user.name')->label('اسم الحيوان') ->sortable() ->searchable(), 
+                TextColumn::make('animal.name')->label('اسم الحيوان') ->sortable() ->searchable(), 
                 TextColumn::make('topic')->label('عنوان الجلسة')->sortable()->searchable(),
                 TextColumn::make('password')->label('كلمة المرور')->sortable()->searchable(),
                 TextColumn::make('start_time')->label('وقت البدء')->sortable()->dateTime('H:i d-m-Y'),
