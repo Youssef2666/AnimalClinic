@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('role')->default(User::ROLES['user']);
             $table->integer('status')->default(1); //0 disable account, 1 activated account 
+            $table->text('fcm_token')->nullable();
         });
     }
 

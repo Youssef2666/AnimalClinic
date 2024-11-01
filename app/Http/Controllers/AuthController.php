@@ -121,13 +121,10 @@ class AuthController extends Controller
 
     public function sendNotification()
     {
-        // Replace with the actual FCM token you want to send to
         $fcmToken = 'f_4Xj9sKQXuELSpHzVXgNU:APA91bGCqM-UqUBKPwsk-hlYH8XuOE1kOI6QimQbHuGdA6RKQJ1N9b1FAer-CWQ-vOB61Gp5wF1vAiVNYODcRukLFoK2lTZd3w9tVfk_uU-aSqpGicPObGSiKiyE6gXq-8g6DrVprxOa'; // Replace with the actual token
 
-        // Replace with your access token
         $accessToken = 'ya29.c.c0ASRK0GboJdNGKzEK6fMATUiAvue7CoOldzYdY-CtUEtAAEIEkAmf_avlRQFncboWnVaSkznCZ4MbDqapLBSzwps0AVfjj3Js-3vXtrQT56tYQMCcc539zO_0COLktd81SD43zOW2j1fvmedsL3ytA8aFo8Oc7--Fi9XgC4NGpefOsrLaj5rTlUd6dqz-aQTGWbZePU_ZUMThKdRMmWranHQv6jvOx3cdJ4AyFRwRkYBE09JDYwqPrLZ0YMf44GVuns_7gmMcQXhN7xc-lipCoF8olfFTpGqk1nmi505Q-c1VcJOme4VytGosE4PLjd7x6DxljB_DFdo_EEiLSVZIiIaPR8kZwFm7S87pmsdEIu4eRswFqfV0QIhlFEVG0gH391CXkbxp520ai3FXWrujbtz02bz0R4cr7v_hOSVchXVQyIbuw36MyM7mUh807WpdeBXuMSap6u6BuvjxMqmWqvl4ndgiezm7wqn6716lr-pOSjco05VRmepY9ysJvR3FUwt1jkpdnJBv-nJdsBtUlUwsRdn_Xiy0B6-1X-b3cem53OBVRh145lFYInFhyy-eQ3U6_p5p3Y1IRoW03qXs083bBOSeu0UpkhQypj6Owm096bBJSl8SXJJda97Xyslmb8pwQ64sg_rar73wo_MWWltygsQ-S0yk3p3fb5ha4eaOv1jBJqemd2MmhnvJyrzth2eX1rg3caIn90eOouJeVcykOfdi-k5sXzRSbhgbRjFBchZmUUyi49edxVoIwhze_F5dumcnn_48357Flg76R9eXfjkx7x_BRU-Mw15v6Yo3wVjovY5J7fU6rn00yj-_0uqhM3hQqaZdyx_vw4dsoWcyaVtvZig-Js65B56Sc9rJ1kU-y90nVbf01zwdtIdeazu8voSWmR7kQfRQZs8c5o6iqOSWgB2rZq3_phunYijXQqo2qUxvtw-e2SyezWfX1qFi5m8Qcpu8mnsUqtdgb9-BvmwdFMZx4qi_y9cXn4wah6qe35XaYU'; // Replace with the actual access token
 
-        // Build the notification message
         $message = [
             'message' => [
                 'token' => $fcmToken,

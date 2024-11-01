@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\AppointmentStatus;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
+use App\Notifications\AppointmentStatusNotification;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -12,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 // use Filament\Forms\Components\TextInput;
 
@@ -27,8 +29,8 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('animal_id') // Use 'animal_id' to reference the animal
-                    ->relationship('animal', 'name') // Load 'name' from the Animal model
+                Forms\Components\Select::make('animal_id')
+                    ->relationship('animal', 'name')
                     ->label('اسم الحيوان')
                     ->required(),
 
@@ -44,19 +46,12 @@ class AppointmentResource extends Resource
                     ->label('تاريخ المقابلة')
                     ->required(),
 
-                // Forms\Components\Select::make('zoomAppointment.meeting_id')
-                //     ->relationship('zoomAppointment', 'meeting_id')
-                //     ->label('رقم الجلسة')
-                //     ->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        //     ->query(function (Builder $query) {
-        //     return $query->where('user_id', fn () => Auth::id());
-        // })
             ->columns([
                 TextColumn::make('id')->sortable()->searchable()->label('رقم الموعد'),
                 TextColumn::make('status')->label('الحالة')->badge()->color(function ($state) {
@@ -72,16 +67,38 @@ class AppointmentResource extends Resource
                 TextColumn::make('zoomAppointment.meeting_id')->label('رقم الجلسة'),
             ])
             ->filters([
-                Tables\Filters\Filter::make('User Appointments'), // Define a custom filter
-                // ->query(function (Builder $query) {
-                //     // Automatically filter based on the authenticated user
-                //     return $query->where('user_id', Auth::id());
-                // })
-                // ->default(true)
+                Tables\Filters\Filter::make('User Appointments'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('changeStatus')
+                    ->label('تغيير الحالة')
+                    ->form([
+                        Forms\Components\Select::make('status')
+                            ->options(collect(AppointmentStatus::cases())->mapWithKeys(fn($status) => [$status->value => $status->label()])->toArray())
+                            ->label('الحالة الجديدة')
+                            ->required(),
+                    ])
+                    ->action(function (Model $record, array $data) {
+                        $record->status = $data['status'];
+                        $record->save();
+
+                        $title = "Appointment Status Changed";
+                        $body = "The status of your appointment has been updated to {$data['status']}.";
+                        $notificationData = [
+                            'appointment_id' => $record->id,
+                            'status' => $data['status'],
+                        ];
+                        $fcmToken = $record->user->fcm_token ?? null; // Assuming `fcm_token` exists on the related user model
+            
+                        // Send the notification
+                        $record->user->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken));
+                        
+
+                    })
+                    ->visible(fn(Model $record) => $record->status !== AppointmentStatus::CONFIRMED->value),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

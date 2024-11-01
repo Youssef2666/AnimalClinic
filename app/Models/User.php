@@ -37,6 +37,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'status',
         'role',
+        'fcm_token',
     ];
 
     public const ROLES = [

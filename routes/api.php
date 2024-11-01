@@ -16,6 +16,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\VaccinationController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\AnimalCategoryController;
+use App\Http\Controllers\LocalBankCardsController;
 use App\Http\Controllers\SurgeryCategoryController;
 use App\Http\Controllers\MedicineCategoryController;
 use App\Http\Controllers\OrderController;
@@ -94,6 +95,10 @@ Route::post('adfali/confirm', [PaymentController::class, 'confirmPayment']);
 //sadad
 Route::post('sadad', [SadadController::class, 'sadad']);
 Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);
+
+//Local bank cards
+Route::post('sadad', [LocalBankCardsController::class, 'localBankCards']);
+Route::post('sadad/confirm', [LocalBankCardsController::class, 'confirmPayment']);
 
 
 //FCM

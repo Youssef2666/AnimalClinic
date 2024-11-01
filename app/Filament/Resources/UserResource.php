@@ -62,7 +62,6 @@ class UserResource extends Resource
                 SelectFilter::make('role')->options([
                     'admin' => 'مدير',
                     'doctor' => 'طبيب',
-                    'employee' => 'موظف',
                 ])
             ])
             ->actions([

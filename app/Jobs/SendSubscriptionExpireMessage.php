@@ -10,9 +10,6 @@ class SendSubscriptionExpireMessage implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(public $user, public $expireDate)
     {
         //
