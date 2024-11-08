@@ -43,8 +43,8 @@ Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 
 
 // Routes for authenticated users
+Route::get('authme', [AuthController::class, 'authme'])->middleware(['auth:sanctum', 'verified-user']);
 Route::middleware(['auth:sanctum', 'status'])->group(function () {
-    Route::get('authme', [AuthController::class, 'authme']);
     Route::delete('logout', [AuthController::class, 'logout']);
     Route::apiResources([
         'animals' => AnimalController::class,
@@ -68,7 +68,7 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
     Route::get('productss/favorite/get', [ProductController::class, 'getMyFavoriteProducts']);
 });
 
-Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);
+Route::get('/animals/user/get', [AnimalController::class, 'getUserAnimals'])->middleware('auth:sanctum');
 
 // Routes for admin users
 Route::middleware(['auth:sanctum', 'role:admin', 'status'])->group(function () {
@@ -97,8 +97,7 @@ Route::post('sadad', [SadadController::class, 'sadad']);
 Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);
 
 //Local bank cards
-Route::post('sadad', [LocalBankCardsController::class, 'localBankCards']);
-Route::post('sadad/confirm', [LocalBankCardsController::class, 'confirmPayment']);
+Route::post('local-bank-cards', [LocalBankCardsController::class, 'initiatePayment'])->name('payment.initiate');
 
 
 //FCM

@@ -12,7 +12,7 @@ class ProductController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $products = Product::all()->map(function ($product) {
+        $products = Product::with('category')->get()->map(function ($product) {
             if ($product->image) {
                 $product->image_url = asset('storage/' . $product->image);
             } else {

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ZoomMeeting extends Model
 {
@@ -39,5 +41,19 @@ class ZoomMeeting extends Model
         );
     }
 
+    protected static function booted()
+    {
+        static::addGlobalScope('doctor_appointments', function (Builder $builder) {
+            if (Auth::check()) {
+                $user = Auth::user();
+
+                if ($user->role !== 'admin') {
+                    $builder->whereHas('appointment', function (Builder $query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                }
+            }
+        });
+    }
 
 }

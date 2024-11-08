@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Notifications\MedicalRecordUpdatedNotification;
 use Filament\Resources\RelationManagers\RelationManager;
 
 class MedicinesRelationManager extends RelationManager
@@ -24,12 +25,12 @@ class MedicinesRelationManager extends RelationManager
         return $form
             ->schema([
                 Select::make('medicine_category_id')  
-                ->relationship('category', 'name')  // Specify the relationship and display the 'name' field
+                ->relationship('category', 'name') 
                 ->required()
                 ->label('Medicine Category'),
 
                 Hidden::make('user_id')
-                ->default(Auth::id()) // Automatically set the value to the authenticated user
+                ->default(Auth::id())
                 ->required(),
 
                 // Select::make('medical_record_id')  
@@ -39,6 +40,15 @@ class MedicinesRelationManager extends RelationManager
 
                 TextInput::make('description')
             ]);
+    }
+    public function created($record)
+    {
+        $medicalRecord = $record->medicalRecord;
+
+        $user = $medicalRecord->animal->user;
+        if ($user) {
+            $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+        }
     }
 
     public function table(Table $table): Table
@@ -65,7 +75,16 @@ class MedicinesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->after(function ($record) {
+                    $medicalRecord = $record->medicalRecord;
+                    $user = $medicalRecord->animal->user;
+
+                    if ($user) {
+                        $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+                    }
+                    return;
+                }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

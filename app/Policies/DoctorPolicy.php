@@ -13,7 +13,7 @@ class DoctorPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->isEmployee() || true;
+        return $user->isAdmin() || $user->isEmployee();
     }
 
     /**
@@ -21,7 +21,7 @@ class DoctorPolicy
      */
     public function view(User $user, Doctor $doctor): bool
     {
-        return $user->isAdmin() || $user->isEmployee() || true;
+        return $user->isAdmin() || $user->isEmployee();
     }
 
     /**
@@ -29,7 +29,7 @@ class DoctorPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() || true;
+        return $user->isAdmin();
     }
 
     /**

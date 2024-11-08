@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\OtpVerifyRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\traits\ResponseTrait;
 use Ichtrojan\Otp\Otp;
 use Illuminate\Http\Request;
+use App\traits\ResponseTrait;
+use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\OtpVerifyRequest;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use App\Notifications\EmailVerificationNotification;
+use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class AuthController extends Controller
 {
@@ -27,7 +31,7 @@ class AuthController extends Controller
         try {
             $user = User::create($request->validated());
             $token = $user->createToken('auth_token')->plainTextToken;
-            // $user->notify(new EmailVerificationNotification($user->email, $this->otp));
+            $user->notify(new EmailVerificationNotification($user->email, $this->otp));
             return $this->successWithToken($user, token: $token);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), 500);
@@ -76,6 +80,7 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         return $this->success($user, 'U are authinticated');
+        
     }
 
     public function sendEmailVerification(Request $request)

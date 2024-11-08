@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Animal;
-use Illuminate\Http\Request;
-use App\traits\ResponseTrait;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\AnimalResource;
 use App\Http\Requests\StoreAnimalRequest;
+use App\Http\Resources\AnimalResource;
+use App\Models\Animal;
 use App\Models\MedicalRecord;
+use App\traits\ResponseTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AnimalController extends Controller
 {
@@ -17,8 +17,8 @@ class AnimalController extends Controller
     public function index()
     {
         try {
-        $animals = Animal::with(['user', 'category','medicalRecord'])->get();
-        return AnimalResource::collection($animals);
+            $animals = Animal::with(['user', 'category', 'medicalRecord'])->get();
+            return AnimalResource::collection($animals);
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
@@ -28,12 +28,10 @@ class AnimalController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreAnimalRequest $request)
-    { 
+    {
         try {
-            // Start a database transaction
             $animal = DB::transaction(function () use ($request) {
-                // Create the animal record
-                $animal = Animal::create([
+                $data = [
                     'user_id' => Auth::id(),
                     'animal_category_id' => $request->animal_category_id,
                     'animal_type' => $request->animal_type,
@@ -41,22 +39,33 @@ class AnimalController extends Controller
                     'age' => $request->age,
                     'weight' => $request->weight,
                     'gender' => $request->gender,
-                ]);
+                ];
+
+                if ($request->hasFile('image')) {
+                    $imagePath = $request->file('image')->store('animals', 'public'); // Store in 'storage/app/public/animals'
+                    $data['image'] = $imagePath; // Save the path in the database
+                }
+
+                $animal = Animal::create($data);
 
                 // Create the medical record associated with the animal
                 $animal->medicalRecord()->create([
                     'animal_id' => $animal->id,
-                    'notes' => 'This is the medical record for the animal'
+                    'notes' => 'This is the medical record for the animal',
                 ]);
 
                 return $animal;
             });
 
-            return $this->success(['animal' => $animal, 'medical_record' => $animal->medicalRecord], 'Animal created successfully', 201);
+            return $this->success(
+                ['animal' => $animal, 'medical_record' => $animal->medicalRecord],
+                'Animal created successfully',
+                201
+            );
 
         } catch (\Throwable $th) {
             // Handle exceptions and return the error message
-            return $th->getMessage();
+            return $this->error($th->getMessage(), 500);
         }
     }
 
@@ -88,13 +97,15 @@ class AnimalController extends Controller
         return $this->success(null, 'animal deleted successfully');
     }
 
-    public function getUserAnimals(Request $request, $id){
-        $animals = Animal::with('appointments','category')->where('user_id', $id)->get();
+    public function getUserAnimals(Request $request)
+    {
+        $animals = Animal::with('appointments', 'category')->where('user_id', Auth::id())->get();
         return AnimalResource::collection($animals);
     }
 
-    public function getMedicalRecordByAnimalId(string $id){
+    public function getMedicalRecordByAnimalId(string $id)
+    {
         $medical_record = MedicalRecord::where('animal_id', $id)->with('animal', 'surgeries', 'vaccinations', 'medicines')->first();
-        return $medical_record;       
+        return $medical_record;
     }
 }

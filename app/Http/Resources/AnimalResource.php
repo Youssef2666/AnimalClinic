@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\AnimalCategory;
 use Illuminate\Http\Request;
+use App\Models\AnimalCategory;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AnimalResource extends JsonResource
@@ -22,6 +23,7 @@ class AnimalResource extends JsonResource
             'weight' => $this->weight,
             'gender' => $this->gender,
             'animal_type' => $this->animal_type,
+            'image_url' => $this->image ? url(Storage::url($this->image)) : null, // Full URL with domain
             'user' => new UserResource($this->whenLoaded('user')),
             'category' => new AnimalCategoryResource($this->whenLoaded('category')),
             'appointments' => $this->whenLoaded('appointments'),

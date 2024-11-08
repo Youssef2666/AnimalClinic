@@ -17,7 +17,8 @@ class Animal extends Model
         'weight',
         'animal_type',
         'animal_category_id',
-        'gender'
+        'gender',
+        'image'
     ];
 
     public function user()

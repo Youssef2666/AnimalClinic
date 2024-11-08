@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources\MedicalRecordResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Log\Logger;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Notifications\MedicalRecordUpdatedNotification;
 use Filament\Resources\RelationManagers\RelationManager;
 
 class VaccinationsRelationManager extends RelationManager
@@ -25,16 +25,16 @@ class VaccinationsRelationManager extends RelationManager
         return $form
             ->schema([
                 Select::make('vaccination_category_id')
-                ->relationship('vaccinationCategory', 'name')
-                ->required(),
+                    ->relationship('vaccinationCategory', 'name')
+                    ->required(),
 
                 Hidden::make('user_id')
-                ->default(Auth::id()),
-                
-                DateTimePicker::make('vaccination_date')
-                ->required(),
+                    ->default(Auth::id()),
 
-                TextInput::make('notes')
+                DateTimePicker::make('vaccination_date')
+                    ->required(),
+
+                TextInput::make('notes'),
             ]);
     }
 
@@ -44,26 +44,34 @@ class VaccinationsRelationManager extends RelationManager
             ->recordTitleAttribute('notes')
             ->columns([
                 TextColumn::make('vaccinationCategory.name')
-                ->label('Vaccination Name')
-                ->searchable(),
+                    ->label('Vaccination Name')
+                    ->searchable(),
 
                 TextColumn::make('vaccinationCategory.cost')
-                ->label('Vaccination Cost')
-                ->searchable(),
+                    ->label('Vaccination Cost')
+                    ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
-                ->label('Medical Record ID')
-                ->searchable(),
+                    ->label('Medical Record ID')
+                    ->searchable(),
 
                 TextColumn::make('vaccination_date')
-                ->label('Vaccination Date')
-                ->searchable(),
+                    ->label('Vaccination Date')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->after(function ($record) {
+                    $medicalRecord = $record->medicalRecord;
+                    $user = $medicalRecord->animal->user;
+                    if ($user) {
+                        $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+                    }
+                    return;
+                }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

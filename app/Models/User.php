@@ -23,7 +23,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return $this->isAdmin() || $this->isDoctor();
     }
 
     /**
@@ -44,6 +44,7 @@ class User extends Authenticatable implements FilamentUser
         'user' => 'User',
         'admin' => 'Admin',
         'doctor' => 'Doctor',
+        'employee' => 'Employee',
     ];
 
     public const STATUS = [

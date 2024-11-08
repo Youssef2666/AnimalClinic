@@ -43,7 +43,6 @@ class Appointment extends Model
                 $user = Auth::user();
 
                 if ($user->role !== 'admin') {
-                    // Filter appointments by the logged-in user's ID if the user is not an admin
                     $builder->where('user_id', $user->id);
                 }
             }

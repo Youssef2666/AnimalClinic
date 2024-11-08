@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\MedicalRecordResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -11,9 +10,8 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\DateTimePicker;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Notifications\MedicalRecordUpdatedNotification;
 use Filament\Resources\RelationManagers\RelationManager;
 
 class SurgeriesRelationManager extends RelationManager
@@ -25,17 +23,26 @@ class SurgeriesRelationManager extends RelationManager
         return $form
             ->schema([
                 Select::make('surgery_category_id')
-                ->relationship('surgeryCategory', 'name')
-                ->required(),
-                
-                Hidden::make('user_id')
-                ->default(Auth::id()),
-                
-                DateTimePicker::make('surgery_date')
-                ->required(),
+                    ->relationship('surgeryCategory', 'name')
+                    ->required(),
 
-                TextInput::make('notes')
+                Hidden::make('user_id')
+                    ->default(Auth::id()),
+
+                DateTimePicker::make('surgery_date')
+                    ->required(),
+
+                TextInput::make('notes'),
             ]);
+    }
+    public function created($record)
+    {
+        $medicalRecord = $record->medicalRecord;
+
+        $user = $medicalRecord->animal->user;
+        if ($user) {
+            $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+        }
     }
 
     public function table(Table $table): Table
@@ -44,32 +51,40 @@ class SurgeriesRelationManager extends RelationManager
             ->recordTitleAttribute('notes')
             ->columns([
                 TextColumn::make('surgeryCategory.name')
-                ->label('Surgery Name')
-                ->searchable(),
+                    ->label('Surgery Name')
+                    ->searchable(),
 
                 TextColumn::make('surgeryCategory.cost')
-                ->label('Surgery Cost')
-                ->searchable(),
+                    ->label('Surgery Cost')
+                    ->searchable(),
 
                 TextColumn::make('surgery_date')
-                ->label('Surgery Date')
-                ->searchable(),
+                    ->label('Surgery Date')
+                    ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
-                ->label('Medical Record ID')
-                ->searchable(),
+                    ->label('Medical Record ID')
+                    ->searchable(),
 
                 TextColumn::make('surgery_date')
-                ->label('Surgery Date')
-                ->searchable(),
-                
+                    ->label('Surgery Date')
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('notes'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                ->after(function ($record) {
+                    $medicalRecord = $record->medicalRecord;
+                    $user = $medicalRecord->animal->user;
+                    if ($user) {
+                        $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+                    }
+                    return;
+                }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -63,6 +63,7 @@ class AppointmentResource extends Resource
                 }),
                 TextColumn::make('interview')->label('نوع المقابلة'),
                 TextColumn::make('date')->label('تاريخ المقابلة'),
+                TextColumn::make('time')->label('وقت المقابلة'),
                 TextColumn::make('animal.name')->label('اسم الحيوان'),
                 TextColumn::make('zoomAppointment.meeting_id')->label('رقم الجلسة'),
             ])
@@ -97,7 +98,7 @@ class AppointmentResource extends Resource
                         
 
                     })
-                    ->visible(fn(Model $record) => $record->status !== AppointmentStatus::CONFIRMED->value),
+                    // ->visible(fn(Model $record) => $record->status !== AppointmentStatus::CONFIRMED->value),
 
             ])
             ->bulkActions([

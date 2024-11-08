@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LocalBankCardsController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -29,9 +30,17 @@ Route::middleware([
 Route::get('/auth/redirect', function () {
     return Socialite::driver('github')->redirect();
 });
- 
+
 Route::get('/auth/callback', function () {
     $user = Socialite::driver('github')->user();
- 
-    
 });
+
+Route::get('/payment/success', function () {
+    return view('payment.success');
+})->name('payment.success');
+
+Route::get('/payment/failure', function () {
+    return view('payment.failure');
+})->name('payment.failure');
+
+Route::get('/payment/callback', [LocalBankCardsController::class, 'handleCallback'])->name('payment.callback')->middleware('auth:sanctum');
