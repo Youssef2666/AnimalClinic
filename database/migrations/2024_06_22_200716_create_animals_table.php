@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('weight');
             $table->enum('gender', ['male', 'female'])->default('male');
             $table->string('image')->nullable();
+            $table->unique(['user_id', 'name']);
             $table->timestamps();
         });
     }

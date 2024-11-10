@@ -68,7 +68,7 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
     Route::get('productss/favorite/get', [ProductController::class, 'getMyFavoriteProducts']);
 });
 
-Route::get('/animals/user/get', [AnimalController::class, 'getUserAnimals'])->middleware('auth:sanctum');
+Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);
 
 // Routes for admin users
 Route::middleware(['auth:sanctum', 'role:admin', 'status'])->group(function () {

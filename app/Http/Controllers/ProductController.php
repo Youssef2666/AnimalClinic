@@ -16,11 +16,10 @@ class ProductController extends Controller
             if ($product->image) {
                 $product->image_url = asset('storage/' . $product->image);
             } else {
-                $product->image_url = null; // Set it to null if the image is null
+                $product->image_url = null;
             }
             return $product;
         });
-
         return $this->success($products);
     }
 
@@ -38,10 +37,8 @@ class ProductController extends Controller
     public function show(string $id)
     {
         try {
-            // Find the product by ID or fail
             $product = Product::findOrFail($id);
 
-            // Add image URL to the product object
             $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
 
             return $this->success($product);

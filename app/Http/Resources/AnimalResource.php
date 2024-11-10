@@ -23,7 +23,7 @@ class AnimalResource extends JsonResource
             'weight' => $this->weight,
             'gender' => $this->gender,
             'animal_type' => $this->animal_type,
-            'image_url' => $this->image ? url(Storage::url($this->image)) : null, // Full URL with domain
+            'image_url' => $this->image ? url(Storage::url($this->image)) : null,
             'user' => new UserResource($this->whenLoaded('user')),
             'category' => new AnimalCategoryResource($this->whenLoaded('category')),
             'appointments' => $this->whenLoaded('appointments'),
