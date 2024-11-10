@@ -29,6 +29,7 @@ class OrderController extends Controller
             'user_id' => Auth::id(),
             'order_date' => $request->order_date,
             'status' => OrderStatus::CONFIRMED->value,
+            'payment_method_id' => $request->payment_method_id
         ]);
         return $this->success($order);
     }
@@ -43,7 +44,7 @@ class OrderController extends Controller
             $product = Product::find($productData['product_id']);
 
             if (!$product) {
-                return response()->json(['error' => 'Product not found'], 404);
+                return response()->json(['error' => 'المنتج غير موجود'], 404);
             }
 
             $order->products()->attach($product->id, [
@@ -52,7 +53,14 @@ class OrderController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Products added to order successfully', 'order' => $order], 201);
+        return response()->json(['message' => 'تم إضافة المنتجات إلى الطلب', 'order' => $order], 201);
+    }
+
+    public function updateOrderPaymentMethod(Request $request, $orderId){
+        $order = Order::findOrFail($orderId);
+        $order->payment_method_id = $request->payment_method_id;
+        $order->save();
+        return $this->success($order);
     }
 
     /**
@@ -60,16 +68,14 @@ class OrderController extends Controller
      */
     public function show(string $id)
 {
-    // Find the authenticated user's order by ID and load products with their categories
     $order = Auth::user()
         ->orders()
         ->where('id', $id)
-        ->with('products.category') // Eager load the product's category
+        ->with('products.category')
         ->first();
 
-    // Check if the order exists
     if (!$order) {
-        return $this->error('Order not found', 404);
+        return $this->error('الطلب غير موجود', 404);
     }
 
     return $this->success($order);

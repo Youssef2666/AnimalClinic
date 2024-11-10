@@ -28,7 +28,8 @@ class DatabaseSeeder extends Seeder
             MedicineSeeder::class,
             SurgerySeeder::class,
             // VaccinationSeeder::class,
-            ProductCategorySeeder::class
+            ProductCategorySeeder::class,
+            PaymentMethodSeeder::class
         ]);
     }
 }

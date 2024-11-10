@@ -12,7 +12,8 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'order_date',
-        'status'
+        'status',
+        'payment_method_id'
     ];
 
     public function products()
@@ -30,5 +31,10 @@ class Order extends Model
         return $this->products->sum(function($product) {
             return $product->pivot->quantity * $product->pivot->price_at_purchase;
         });
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

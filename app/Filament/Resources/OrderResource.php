@@ -46,7 +46,8 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('id')->searchable()->sortable()->label('رقم الطلب'),
                 TextColumn::make('user.name')->searchable()->sortable()->label('اسم المستخدم'),
-                TextColumn::make('order_date')->sortable()->label('تاريخ الطلب'),
+                TextColumn::make('order_date')->sortable()->label('تاريخ الطلب'), 
+                TextColumn::make('paymentMethod.name')->sortable()->label('طريقة الدفع'), 
                 TextColumn::make('status')->label('الحالة')
     ->badge()
     ->color(function ($state) {
