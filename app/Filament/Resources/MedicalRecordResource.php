@@ -15,6 +15,7 @@ use App\Filament\Resources\MedicalRecordResource\Pages;
 use App\Filament\Resources\MedicalRecordResource\RelationManagers\MedicinesRelationManager;
 use App\Filament\Resources\MedicalRecordResource\RelationManagers\SurgeriesRelationManager;
 use App\Filament\Resources\MedicalRecordResource\RelationManagers\VaccinationsRelationManager;
+use App\Filament\Widgets\AnimalsOverview;
 
 class MedicalRecordResource extends Resource
 {
@@ -30,6 +31,13 @@ class MedicalRecordResource extends Resource
     public static function canCreate(): bool
     {
         return Auth::user()->isAdmin();
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            AnimalsOverview::class
+        ];
     }
 
     public static function form(Form $form): Form

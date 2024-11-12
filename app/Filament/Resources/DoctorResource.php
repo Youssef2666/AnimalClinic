@@ -2,27 +2,35 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\DoctorSpecializationStatus;
-use App\Filament\Resources\DoctorResource\Pages;
-use App\Models\Doctor;
 use App\Models\User;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\Doctor;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
+use App\Enums\DoctorSpecializationStatus;
+use App\Filament\Widgets\AnimalsOverview;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TimePicker;
+use App\Filament\Resources\DoctorResource\Pages;
 
 class DoctorResource extends Resource
 {
     protected static ?string $model = Doctor::class;
     protected static ?string $modelLabel = 'طبيب';
     protected static ?string $pluralModelLabel = 'الأطباء';
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            AnimalsOverview::class
+        ];
+    }
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 

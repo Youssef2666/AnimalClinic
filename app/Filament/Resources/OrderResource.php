@@ -58,13 +58,12 @@ class OrderResource extends Resource
             default => 'secondary',                     
         };
     }),
-    TextColumn::make('total_price') // Adding the total price column
+    TextColumn::make('total_price') 
     ->label('السعر الكلي')
-    ->getStateUsing(fn(Order $record) => $record->total_price) // Accessing the attribute from the model
+    ->getStateUsing(fn(Order $record) => $record->total_price)
     ->sortable(),
             ])
             ->filters([
-                // Add filters here
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

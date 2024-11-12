@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\AdminPanelResource\Widgets;
 
+use App\Models\Doctor;
+use App\Models\Order;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -11,12 +14,34 @@ class StatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Users', User::count())
-            ->description('Total number of users')
-            ->chart([
-                1, 3, 2, 5, 3, 8,
-            ])
-            ->chartColor('primary'),
+            Stat::make('المستخدمين', User::count())
+                ->description('العدد الكلي للمستخدمين')
+                ->chart($this->getMonthlyCounts(User::class))
+                ->chartColor('primary'),
+
+            Stat::make('الأطباء', Doctor::count())
+                ->description('العدد الكلي للاطباء')
+                ->chart($this->getMonthlyCounts(Doctor::class))
+                ->chartColor('secondary'),
+
+            Stat::make('الطلبات', Order::count())
+                ->description('العدد الكلي للطلبات')
+                ->chart($this->getMonthlyCounts(Order::class))
+                ->chartColor('success'),
         ];
+    }
+
+    private function getMonthlyCounts(string $model): array
+    {
+        $data = [];
+        $year = Carbon::now()->year;
+
+        for ($month = 1; $month <= 12; $month++) {
+            $data[] = $model::whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->count();
+        }
+
+        return $data;
     }
 }
