@@ -19,7 +19,6 @@ use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Filament\Resources\OrderResource\Widgets\OrderOverview;
-use App\Filament\Resources\ProductResource\Widgets\ProductStats;
 
 class ProductResource extends Resource
 {
@@ -32,7 +31,7 @@ class ProductResource extends Resource
     protected function getFooterWidgets(): array
     {
         return [
-            ProductStats::class,
+            // ProductStats::class,
         ];
     }
 
