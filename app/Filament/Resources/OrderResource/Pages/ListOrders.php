@@ -8,6 +8,7 @@ use Filament\Resources\Components\Tab;
 use App\Filament\Resources\OrderResource;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\OrderResource\Widgets\OrderOverview;
 
 class ListOrders extends ListRecords
 {
@@ -17,6 +18,13 @@ class ListOrders extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            OrderOverview::class
         ];
     }
 

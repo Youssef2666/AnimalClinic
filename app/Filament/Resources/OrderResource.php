@@ -25,12 +25,7 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            OrderOverview::class
-        ];
-    }
+    
 
     public static function form(Form $form): Form
     {
