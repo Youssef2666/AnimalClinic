@@ -14,12 +14,12 @@ class AppointmentInterviewOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('مواعيد الأونلاين', Appointment::where('status', AppointmentInterviewStatus::ONLINE->value)->count())
+            Stat::make('مواعيد الأونلاين', Appointment::where('interview', AppointmentInterviewStatus::ONLINE->value)->count())
                 ->description('مواعيد الأونلاين خلال الأسبوع')
                 ->chart($this->getOnlineAppointmentsCountForLast7Days())
                 ->chartColor(Color::Amber),
 
-            Stat::make('مواعيد الأوفلاين', Appointment::where('status', AppointmentInterviewStatus::OFFLINE->value)->count())
+            Stat::make('مواعيد الأوفلاين', Appointment::where('interview', AppointmentInterviewStatus::OFFLINE->value)->count())
                 ->description('مواعيد الأوفلاين خلال الأسبوع')
                 ->chart($this->getOfflineAppointmentsCountForLast7Days())
                 ->chartColor(Color::Green),

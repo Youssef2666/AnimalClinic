@@ -91,10 +91,10 @@ class AppointmentResource extends Resource
                             'appointment_id' => $record->id,
                             'status' => $data['status'],
                         ];
-                        $fcmToken = $record->user->fcm_token ?? null; // Assuming `fcm_token` exists on the related user model
+                        $fcmToken = $record->user->fcm_token ?? null;
             
                         // Send the notification
-                        $record->user->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken));
+                        // $record->user->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken));
                         
 
                     })
