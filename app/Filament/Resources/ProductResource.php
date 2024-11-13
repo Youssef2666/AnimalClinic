@@ -28,12 +28,7 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected function getFooterWidgets(): array
-    {
-        return [
-            // ProductStats::class,
-        ];
-    }
+    
 
     public static function form(Form $form): Form
     {
