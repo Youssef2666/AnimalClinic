@@ -19,6 +19,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\AdminPanelResource\Widgets\StatsOverviewWidget;
+use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,6 +32,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->databaseNotifications()
+            ->plugin(
+                FilamentSpatieLaravelBackupPlugin::make()
+            )
             ->colors([
                 'primary' => Color::Sky,
                 'secondary' => Color::Fuchsia,

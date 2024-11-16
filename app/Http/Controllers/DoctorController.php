@@ -15,7 +15,7 @@ class DoctorController extends Controller
         try {
             $doctors = Doctor::with('user')->get()->map(function ($doctor) {
                 $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
-                $doctor->user_name = $doctor->user->name; // Optionally include user's name if needed
+                $doctor->user_name = $doctor->user->name;
                 return $doctor;
             });
 
@@ -46,10 +46,8 @@ class DoctorController extends Controller
     try {
         $doctor = Doctor::with('user')->findOrFail($id);
 
-        // Add image URL to the doctor object
         $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
 
-        // Optionally include user's name
         $doctor->user_name = $doctor->user->name;
 
         return $this->success($doctor);

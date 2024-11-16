@@ -2,77 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Carbon;
-use App\Models\Appointment;
-use App\Models\ZoomMeeting;
-use Illuminate\Http\Request;
-use Jubaer\Zoom\Facades\Zoom;
 use App\Enums\AppointmentInterviewStatus;
 use App\Http\Requests\StoreAppointmentRequest;
+use App\Models\Appointment;
+use App\Models\ZoomMeeting;
 use App\traits\ResponseTrait;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Jubaer\Zoom\Facades\Zoom;
 
 class AppointmentController extends Controller
 {
     use ResponseTrait;
     public function index()
     {
+        return Appointment::with(['zoomAppointment' => function ($query){
+            $query->withoutGlobalScope('doctor_appointments');
+        }])->get();
         $appointments = Appointment::with('zoomAppointment')->withoutGlobalScope('user_appointments')->get();
         return $this->success($appointments, 'Appointments retrieved successfully', 200);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreAppointmentRequest $request)
     {
-        // Create the appointment
         $appointment = Appointment::create([
-        'user_id' => $request->user_id,
-        'animal_id' => $request->animal_id,
-        'date' => $request->date,
-        'time' => $request->time,
-        'interview' => $request->interview,
-        'status' => $request->status,
-        'type' => $request->type,
+            'user_id' => $request->user_id,
+            'animal_id' => $request->animal_id,
+            'date' => $request->date,
+            'time' => $request->time,
+            'interview' => $request->interview,
+            'status' => $request->status,
+            'type' => $request->type,
         ]);
-        // Check if the appointment type is online (Zoom)
-    if ($appointment->interview === AppointmentInterviewStatus::ONLINE->value) {
-        $start_time = Carbon::parse($appointment->date . ' ' . $appointment->time, 'Africa/Tripoli')
-        ->format('Y-m-d\TH:i:s');
+        if ($appointment->interview === AppointmentInterviewStatus::ONLINE->value) {
+            $start_time = Carbon::parse($appointment->date . ' ' . $appointment->time, 'Africa/Tripoli')
+                ->format('Y-m-d\TH:i:s');
 
-        // Create the Zoom meeting
-        $zoomMeeting = Zoom::createMeeting([
-            'topic' => 'Appointment for Animal ' . $appointment->animal->name,
-            'type' => 2, // Scheduled meeting
-            'start_time' => $start_time,
-            'duration' => 40, // in minutes
-            'timezone' => 'Africa/Tripoli',
-            'password' => 'test',
-            'agenda' => 'test',
-        ]);
+            $zoomMeeting = Zoom::createMeeting([
+                'topic' => 'Appointment for Animal ' . $appointment->animal->name,
+                'type' => 2,
+                'start_time' => $start_time,
+                'duration' => 40,
+                'timezone' => 'Africa/Tripoli',
+                'password' => 'test',
+                'agenda' => 'test',
+            ]);
 
-        $zoomData = $zoomMeeting['data'];
+            $zoomData = $zoomMeeting['data'];
 
-        $myZoom = ZoomMeeting::create([
-            'appointment_id' => $appointment->id,
-            'meeting_id' => $zoomData['id'], 
-            'start_url' => $zoomData['start_url'],
-            'join_url' => $zoomData['join_url'],
-            'topic' => $zoomData['topic'],
-            'start_time' => $zoomData['start_time'],
-            'duration' => $zoomData['duration'],
-            'timezone' => $zoomData['timezone'],
-            'password' => $zoomData['password'],
-            'agenda' => $zoomData['agenda'],
-        ]);
-        return $this->success([$appointment, $myZoom ], 'Appointment and Zoom created successfully', 201);
-    }
+            $myZoom = ZoomMeeting::create([
+                'appointment_id' => $appointment->id,
+                'meeting_id' => $zoomData['id'],
+                'start_url' => $zoomData['start_url'],
+                'join_url' => $zoomData['join_url'],
+                'topic' => $zoomData['topic'],
+                'start_time' => $zoomData['start_time'],
+                'duration' => $zoomData['duration'],
+                'timezone' => $zoomData['timezone'],
+                'password' => $zoomData['password'],
+                'agenda' => $zoomData['agenda'],
+            ]);
+            return $this->success([$appointment, $myZoom], 'Appointment and Zoom created successfully', 201);
+        }
         return $this->success($appointment, 'Appointment created successfully', 201);
     }
 
-    public function getDoctorAppointments(string $id){
-        $appointments = Appointment::with('zoomAppointment')->where('user_id', $id)->get();
+    public function getDoctorAppointments(string $id)
+    {
+        $appointments = Appointment::withoutGlobalScope('user_appointments')
+            ->with('zoomAppointment')
+            ->where('user_id', $id)
+            ->get();
+
         return $this->success($appointments);
     }
 

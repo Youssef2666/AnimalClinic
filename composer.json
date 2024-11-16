@@ -17,7 +17,9 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
         "plutu/plutu-laravel": "^1.1",
-        "predis/predis": "2.0"
+        "predis/predis": "2.0",
+        "shuvroroy/filament-spatie-laravel-backup": "^2.2",
+        "wnx/laravel-backup-restore": "^1.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
