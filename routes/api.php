@@ -16,6 +16,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SurgeryController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\UserPhoneController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\VaccinationController;
 use App\Http\Controllers\MedicalRecordController;
@@ -61,7 +62,8 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
         'appointments' => AppointmentController::class,
         'products' => ProductController::class,
         'orders' => OrderController::class,
-        'payment_methods' => PaymentMethodController::class
+        'payment_methods' => PaymentMethodController::class,
+        'phones' => UserPhoneController::class,
     ]);
     Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
     Route::get('appointments/{id}/doctor', [AppointmentController::class, 'getDoctorAppointments']);
@@ -107,3 +109,7 @@ Route::get('fcm', [AuthController::class, 'sendNotification']);
 
 
 Route::post('update-order-payment-method', [OrderController::class, 'updateOrderPaymentMethod'])->middleware('auth:sanctum');
+
+
+Route::post('doctors-redis', [DoctorController::class, 'saveDoctorsToRedis']);
+Route::get('doctors-redis-all', [DoctorController::class, 'getDoctorsFromRedis']);

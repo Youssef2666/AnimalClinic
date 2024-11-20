@@ -6,6 +6,7 @@ use App\Jobs\SendSubscriptionExpireMessage;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redis;
 
 class SubscriptionExpiryNotification extends Command
 {
@@ -34,6 +35,7 @@ class SubscriptionExpiryNotification extends Command
         foreach ($users as $user) {
             $expireDate = Carbon::createFromFormat('Y-m-d H:i:s', $user->created_at)->toDateString();
             dispatch(new SendSubscriptionExpireMessage($user, $expireDate))->onQueue('youssef');
+            
         }
     }
 }

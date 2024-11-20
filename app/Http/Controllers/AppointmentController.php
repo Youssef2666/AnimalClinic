@@ -16,12 +16,12 @@ class AppointmentController extends Controller
     use ResponseTrait;
     public function index()
     {
-        return Appointment::with(['zoomAppointment' => function ($query){
+        $appointments = Appointment::with(['zoomAppointment' => function ($query){
             $query->withoutGlobalScope('doctor_appointments');
-        }])->get();
-        $appointments = Appointment::with('zoomAppointment')->withoutGlobalScope('user_appointments')->get();
+        }])->withoutGlobalScope('user_appointments')->get();
         return $this->success($appointments, 'Appointments retrieved successfully', 200);
     }
+
     public function store(StoreAppointmentRequest $request)
     {
         $appointment = Appointment::create([

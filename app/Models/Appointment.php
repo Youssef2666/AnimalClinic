@@ -36,16 +36,16 @@ class Appointment extends Model
         return $this->hasOne(ZoomMeeting::class);
     }
 
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope('user_appointments', function (Builder $builder) {
-    //         if (Auth::check()) {
-    //             $user = Auth::user();
+    protected static function booted()
+    {
+        static::addGlobalScope('user_appointments', function (Builder $builder) {
+            if (Auth::check()) {
+                $user = Auth::user();
 
-    //             if ($user->role !== 'admin') {
-    //                 $builder->where('user_id', $user->id);
-    //             }
-    //         }
-    //     });
-    // }
+                if ($user->role !== 'admin') {
+                    $builder->where('user_id', $user->id);
+                }
+            }
+        });
+    }
 }

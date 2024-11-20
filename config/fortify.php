@@ -13,7 +13,7 @@ return [
     | authenticating users. This value should correspond with one of your
     | guards that is already present in your "auth" configuration file.
     |
-     */
+    */
 
     'guard' => 'web',
 

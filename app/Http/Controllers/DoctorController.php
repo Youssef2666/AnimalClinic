@@ -6,6 +6,7 @@ use App\Http\Requests\StoreDoctorRequest;
 use App\Models\Doctor;
 use App\traits\ResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class DoctorController extends Controller
 {
@@ -42,20 +43,19 @@ class DoctorController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-{
-    try {
-        $doctor = Doctor::with('user')->findOrFail($id);
+    {
+        try {
+            $doctor = Doctor::with('user')->findOrFail($id);
 
-        $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
+            $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
 
-        $doctor->user_name = $doctor->user->name;
+            $doctor->user_name = $doctor->user->name;
 
-        return $this->success($doctor);
-    } catch (\Throwable $th) {
-        return $this->error($th->getMessage());
+            return $this->success($doctor);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage());
+        }
     }
-}
-
 
     /**
      * Update the specified resource in storage.
@@ -74,5 +74,35 @@ class DoctorController extends Controller
     {
         Doctor::destroy($id);
         return $this->success(null, 'doctor deleted successfully');
+    }
+
+    public function saveDoctorsToRedis()
+    {
+        $doctors = Doctor::with('user')->get();
+
+        foreach ($doctors as $doctor) {
+            $doctorData = [
+                'id' => $doctor->id,
+                'name' => $doctor->user->name,
+                'specialization' => $doctor->specialization,
+                'image_url' => $doctor->image ? asset('storage/' . $doctor->image) : null,
+            ];
+
+            Redis::hset('doctors', $doctor->id, json_encode($doctorData));
+        }
+
+        return response()->json(['message' => 'Doctors data saved to Redis']);
+    }
+
+    public function getDoctorsFromRedis()
+    {
+        $doctors = Redis::hgetall('doctors');
+
+        $decodedDoctors = [];
+        foreach ($doctors as $id => $data) {
+            $decodedDoctors[$id] = json_decode($data, true);
+        }
+
+        return response()->json($decodedDoctors);
     }
 }
