@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\OtpVerifyRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Notifications\EmailVerificationNotification;
+use App\traits\ResponseTrait;
 use Ichtrojan\Otp\Otp;
 use Illuminate\Http\Request;
-use App\traits\ResponseTrait;
-use App\Http\Requests\LoginRequest;
-use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\OtpVerifyRequest;
-use NotificationChannels\Fcm\FcmChannel;
-use NotificationChannels\Fcm\FcmMessage;
-use App\Notifications\EmailVerificationNotification;
-use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class AuthController extends Controller
 {
@@ -42,11 +39,20 @@ class AuthController extends Controller
     {
         try {
             $request->validated($request->all());
+
             if (!Auth::attempt($request->only('email', 'password'))) {
                 return $this->error('Credentials do not match', 401);
             }
+
             $user = User::where('email', $request['email'])->firstOrFail();
+
             $token = $user->createToken('auth_token')->plainTextToken;
+
+            $user->update([
+                'fcm_token' => $request->fcm_token ?? $user->fcm_token,
+                'access_token' => $request->access_token ?? $user->access_token,
+            ]);
+
             return $this->successWithToken($user, token: $token);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), 500);
@@ -80,7 +86,7 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         return $this->success($user, 'U are authinticated');
-        
+
     }
 
     public function sendEmailVerification(Request $request)

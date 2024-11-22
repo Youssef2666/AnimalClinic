@@ -49,7 +49,7 @@ class ZoomMeeting extends Model
 
                 if ($user->role !== 'admin') {
                     $builder->whereHas('appointment', function (Builder $query) use ($user) {
-                        $query->where('user_id', $user->id);
+                        $query->where('doctor_id', $user?->doctor?->id);
                     });
                 }
             }

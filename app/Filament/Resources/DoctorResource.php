@@ -6,6 +6,7 @@ use App\Models\User;
 use Filament\Tables;
 use App\Models\Doctor;
 use Filament\Forms\Form;
+use App\Enums\DaysStatus;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
@@ -17,6 +18,7 @@ use App\Enums\DoctorSpecializationStatus;
 use App\Filament\Widgets\AnimalsOverview;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\CheckboxList;
 use App\Filament\Resources\DoctorResource\Pages;
 
 class DoctorResource extends Resource
@@ -70,8 +72,6 @@ class DoctorResource extends Resource
                             ->password()
                             ->required()
                             ->columnSpan(2),
-
-                        // Other user-related fields...
                     ])
                     ->columns(2),
                 Section::make('Doctor Extra Information')
@@ -101,21 +101,28 @@ class DoctorResource extends Resource
                         FileUpload::make('image')
                             ->label('صورة الطبيب')
                             ->image(),
-
-                        // Select::make('gender')
-                        //     ->label('Gender')
-                        //     ->options(array_column(GenderStatus::cases(), 'name', 'value'))
-                        //     ->required(),
+                            CheckboxList::make('work_days')
+                            ->label('Work Days')
+                            ->options(array_column(DaysStatus::cases(), 'name', 'value'))
+                            ->afterStateHydrated(function (CheckboxList $component, $state, $record) {
+                                if ($record && $record->workDays) {
+                                    $component->state(
+                                        $record->workDays->pluck('day')->toArray()
+                                    );
+                                }
+                            })
+                            ->dehydrateStateUsing(fn ($state) => collect($state)->filter()->values()->all())
+                            ->saveRelationshipsUsing(function ($state, $record) {
+                                $record->workDays()->delete();
+                                foreach ($state as $day) {
+                                    $record->workDays()->create([
+                                        'doctor_id' => $record->id,
+                                        'day' => $day,               
+                                    ]);
+                                }
+                            }),                        
                     ])
                     ->columns(2),
-                // Select::make('user_id')
-                // ->label('Doctor')
-                // ->options(function () {
-                //     return User::doctor()->pluck('name', 'id')->toArray();
-                // })
-                // ->required()
-                // ->searchable(),
-
             ]);
     }
 
@@ -158,10 +165,8 @@ class DoctorResource extends Resource
     }
     public function edit($record): void
     {
-        // Ensure the 'user' relation is loaded when editing the Doctor
         $record->load('user');
 
-        // Now pass the record to the form:
         parent::edit($record);
     }
 

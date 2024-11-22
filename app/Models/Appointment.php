@@ -12,7 +12,7 @@ class Appointment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'doctor_id',
         'animal_id',
         'date',
         'time',
@@ -23,7 +23,7 @@ class Appointment extends Model
 
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class, 'user_id');
+        return $this->belongsTo(Doctor::class);
     }
 
     public function animal()
@@ -43,7 +43,7 @@ class Appointment extends Model
                 $user = Auth::user();
 
                 if ($user->role !== 'admin') {
-                    $builder->where('user_id', $user->id);
+                    $builder->where('doctor_id', $user?->doctor?->id);
                 }
             }
         });

@@ -25,7 +25,7 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
         $appointment = Appointment::create([
-            'user_id' => $request->user_id,
+            'doctor_id' => $request->doctor_id,
             'animal_id' => $request->animal_id,
             'date' => $request->date,
             'time' => $request->time,
@@ -69,8 +69,10 @@ class AppointmentController extends Controller
     public function getDoctorAppointments(string $id)
     {
         $appointments = Appointment::withoutGlobalScope('user_appointments')
-            ->with('zoomAppointment')
-            ->where('user_id', $id)
+            ->with(['zoomAppointment' => function ($query){
+                $query->withoutGlobalScope('doctor_appointments');
+            }])
+            ->where('doctor_id', $id)
             ->get();
 
         return $this->success($appointments);
@@ -81,8 +83,10 @@ class AppointmentController extends Controller
      */
     public function show(string $id)
     {
-        return ZoomMeeting::all();
-        $appointment = Appointment::with('zoomAppointment')->find($id);
+        $appointment = Appointment::with(
+            ['zoomAppointment' => function ($query){
+                $query->withoutGlobalScope('doctor_appointments');
+            }])->withoutGlobalScope('user_appointments')->find($id);
         return $this->success($appointment);
     }
 

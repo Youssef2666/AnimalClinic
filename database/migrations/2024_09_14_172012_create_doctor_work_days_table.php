@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('doctor_work_days', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Doctor::class, 'user_id');
+            $table->foreignIdFor(Doctor::class);
             $table->enum('day', array_column(DaysStatus::cases(), 'value'));
             $table->timestamps();
         });

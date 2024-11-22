@@ -7,7 +7,6 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -112,7 +111,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function scopeDoctor($query)
     {
-        return $query->where('role', 'doctor'); // Adjust as needed
+        return $query->where('role', 'doctor');
     }
 
     public function animals()
@@ -133,6 +132,11 @@ class User extends Authenticatable implements FilamentUser
     public function phones()
     {
         return $this->hasMany(UserPhone::class);
+    }
+
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
     }
 
 }

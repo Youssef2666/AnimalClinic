@@ -18,35 +18,35 @@ class EditDoctor extends EditRecord
         ];
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        // Get the related user data
-        $user = User::find($this->record->user_id);
+    // protected function mutateFormDataBeforeFill(array $data): array
+    // {
+    //     // Get the related user data
+    //     $user = User::find($this->record->user_id);
 
-        // Populate the user fields in the form
-        $data['user'] = [
-            // 'name' => $user->name,
-            // 'email' => $user->email,
-            'password' => '', // Leave password empty to avoid pre-filling it
-        ];
+    //     // Populate the user fields in the form
+    //     $data['user'] = [
+    //         // 'name' => $user->name,
+    //         // 'email' => $user->email,
+    //         'password' => '', // Leave password empty to avoid pre-filling it
+    //     ];
 
-        return $data;
-    }
+    //     return $data;
+    // }
 
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        // Update user-related data
-        $user = User::find($this->record->user_id);
-        $user->update([
-            // 'name' => $data['user']['name'],
-            // 'email' => $data['user']['email'],
-            // Check if password needs to be updated
-            'password' => !empty($data['user']['password']) ? bcrypt($data['user']['password']) : $user->password,
-        ]);
+    // protected function mutateFormDataBeforeSave(array $data): array
+    // {
+    //     // Update user-related data
+    //     $user = User::find($this->record->user_id);
+    //     $user->update([
+    //         // 'name' => $data['user']['name'],
+    //         // 'email' => $data['user']['email'],
+    //         // Check if password needs to be updated
+    //         'password' => !empty($data['user']['password']) ? bcrypt($data['user']['password']) : $user->password,
+    //     ]);
 
-        // We remove the user part of the data so it won't be saved as part of the DoctorExtraInfo
-        unset($data['user']);
+    //     // We remove the user part of the data so it won't be saved as part of the DoctorExtraInfo
+    //     unset($data['user']);
 
-        return $data;
-    }
+    //     return $data;
+    // }
 }

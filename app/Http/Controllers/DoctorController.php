@@ -105,4 +105,12 @@ class DoctorController extends Controller
 
         return response()->json($decodedDoctors);
     }
+
+
+    public function getDoctorWorkDays($id){
+        $doctor = Doctor::findOrFail($id);
+        $days = $doctor->workDays()->pluck('day');
+        return $this->success($days);
+        return $this->success($doctor->workDays);
+    }
 }

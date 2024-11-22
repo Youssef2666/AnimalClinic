@@ -26,7 +26,7 @@ class StoreAppointmentRequest extends BaseRequest
     public function rules(): array
     {
         return [
-        'user_id' => 'required|exists:users,id',
+        'doctor_id' => 'required|exists:doctors,id',
         'animal_id' => 'required|exists:animals,id',
         'date' => 'required|date',
         'time' => 'required',

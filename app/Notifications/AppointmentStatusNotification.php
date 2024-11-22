@@ -3,10 +3,11 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\DatabaseMessage;
 
 class AppointmentStatusNotification extends Notification implements ShouldQueue
 {
@@ -16,18 +17,28 @@ class AppointmentStatusNotification extends Notification implements ShouldQueue
     protected $body;
     protected $data;
     protected $fcmToken;
+    protected $access_token;
 
-    public function __construct($title, $body, $data = [], $fcmToken = null)
+    public function __construct($title, $body, $data = [], $fcmToken = null, $access_token = null)
     {
         $this->title = $title;
         $this->body = $body;
         $this->data = $data;
         $this->fcmToken = $fcmToken;
+        $this->access_token = $access_token;
+    }
+
+    public function toMail($notifiable){
+        return (new MailMessage)
+            ->subject($this->title)
+            ->greeting($this->body)
+            ->line('تم تغيير حالة الموعد ')
+            ->line('تم تغيير حالة الموعد ');
     }
 
     public function via($notifiable)
     {
-        return ['database', 'fcm'];
+        return ['mail','database', 'fcm'];
     }
 
     public function toDatabase($notifiable)
@@ -43,7 +54,7 @@ class AppointmentStatusNotification extends Notification implements ShouldQueue
     {
         if ($this->fcmToken) {
             Http::withHeaders([
-                'Authorization' => 'Bearer ' . config('services.fcm.access_token'), // Assuming access_token is set in config/services.php
+                'Authorization' => 'Bearer ' . $this->access_token,
                 'Content-Type' => 'application/json',
             ])->post('https://fcm.googleapis.com/v1/projects/vetcare-c8e34/messages:send', [
                 'message' => [

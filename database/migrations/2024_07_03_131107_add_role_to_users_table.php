@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('role')->default(User::ROLES['user']);
             $table->integer('status')->default(1); //0 disable account, 1 activated account 
             $table->text('fcm_token')->nullable();
+            $table->text('access_token')->nullable();
         });
     }
 

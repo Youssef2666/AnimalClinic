@@ -92,9 +92,10 @@ class AppointmentResource extends Resource
                             'status' => $data['status'],
                         ];
                         $fcmToken = $record->user->fcm_token ?? null;
+                        $access_token = $record->user->access_token ?? null;
             
                         // Send the notification
-                        // $record->user->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken));
+                        $record->user->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken, $access_token));
                         
 
                     })

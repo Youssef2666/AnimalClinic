@@ -10,16 +10,35 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
     use ResponseTrait;
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->get()->map(function ($product) {
-            if ($product->image) {
-                $product->image_url = asset('storage/' . $product->image);
-            } else {
-                $product->image_url = null;
-            }
-            return $product;
-        });
+        $products = Product::query()
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('name', 'like', "%{$request->search}%");
+            })
+            ->when($request->product_category_id, function ($query) use ($request) {
+                $query->where('product_category_id', $request->product_category_id);
+            })
+            ->when($request->min_price && $request->max_price, function ($query) use ($request) {
+                $query->whereBetween('price', [$request->min_price, $request->max_price]);
+            })
+            ->when($request->min_price && !$request->max_price, function ($query) use ($request) {
+                $query->where('price', '>=', $request->min_price);
+            })
+            ->when(!$request->min_price && $request->max_price, function ($query) use ($request) {
+                $query->where('price', '<=', $request->max_price);
+            })
+            ->when($request->most_popular, function ($query) {
+                $query->withCount('favouritedByUsers')->orderBy('favourited_by_users_count', 'desc');
+            })
+            ->with(['category'])
+            ->get()
+            ->map(function ($product) {
+                $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
+                // $product->is_favorited = Auth::user() && $product->favouritedByUsers->contains(Auth::id());
+                return $product;
+            });
+
         return $this->success($products);
     }
 
@@ -40,7 +59,6 @@ class ProductController extends Controller
             $product = Product::findOrFail($id);
 
             $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
-
             return $this->success($product);
         } catch (\Throwable $th) {
             return $this->error($th->getMessage());

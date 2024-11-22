@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->primary();
+            $table->foreignIdFor(User::class);
             $table->string('specialization')->nullable();
             $table->time('work_start_time');
             $table->time('work_end_time');
