@@ -24,6 +24,8 @@ class LoginRequest extends BaseRequest
         return [
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'fcm_token' => ['nullable', 'string'],
+            'access_token' => ['nullable', 'string'],
         ];
     }
 }

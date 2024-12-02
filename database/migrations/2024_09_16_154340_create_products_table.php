@@ -13,8 +13,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->id()->index();
+            $table->string('name')->index();
             $table->integer('price');
             $table->integer('stock');
             $table->string('description')->nullable();

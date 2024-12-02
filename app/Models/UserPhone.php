@@ -12,8 +12,13 @@ class UserPhone extends Model
     protected $fillable = [
         'user_id',
         'phone_number',
+        'verified_at'
     ];
 
+    public function isVerified(): bool
+    {
+        return !is_null($this->verified_at);
+    }
 
     public function user()
     {

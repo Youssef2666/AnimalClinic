@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use TomatoPHP\FilamentLogger\FilamentLoggerPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -30,8 +31,12 @@ class AdminPanelProvider extends PanelProvider
             ->brandName(fn() => Auth::user()->name ?? 'Aleef')
             ->id('admin')
             ->path('admin')
+            ->spa()
             ->login()
             ->databaseNotifications()
+            // ->plugin(
+            //     FilamentLoggerPlugin::make()
+            // )
             ->plugin(
                 FilamentSpatieLaravelBackupPlugin::make()
             )

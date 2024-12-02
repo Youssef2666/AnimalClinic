@@ -46,7 +46,7 @@ class DoctorResource extends Resource
                             ->label('اسم الطبيب')
                             ->required()
                             ->unique(table: User::class, column: 'name')
-                            ->visible(fn($livewire) => $livewire instanceof \App\Filament\Resources\DoctorResource\Pages\CreateDoctor)
+                            // ->visible(fn($livewire) => $livewire instanceof \App\Filament\Resources\DoctorResource\Pages\CreateDoctor)
                             ->columnSpan(2),
 
                         TextInput::make('user.email')
@@ -57,8 +57,8 @@ class DoctorResource extends Resource
                             ->unique(
                                 table: User::class,
                                 column: 'email',
-                            )
-                            ->visible(fn($livewire) => $livewire instanceof \App\Filament\Resources\DoctorResource\Pages\CreateDoctor), // Apply unique only when creating
+                            ),
+                            // ->visible(fn($livewire) => $livewire instanceof \App\Filament\Resources\DoctorResource\Pages\CreateDoctor), // Apply unique only when creating
 
                         TextInput::make('user.password')
                             ->label('كلمة المرور')

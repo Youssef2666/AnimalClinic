@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Filament\Notifications\Notification;
 use App\Filament\Resources\DoctorResource;
 use Filament\Resources\Pages\CreateRecord;
+use TomatoPHP\FilamentLogger\Facades\FilamentLogger;
 
 class CreateDoctor extends CreateRecord
 {
@@ -36,9 +37,11 @@ class CreateDoctor extends CreateRecord
                 'cost' => $data['cost'],
                 'image' => $data['image'], // Save the image name to the Doctor model
             ]);
+            FilamentLogger::log(message:'Your message here', level:'info');
         } catch (Exception $e) {
             // Log the error
             Log::error('Doctor creation failed: ' . $e->getMessage());
+            FilamentLogger::log(message:'Your message here', level:'error');
     
             // Display an error notification in Filament
             Notification::make()

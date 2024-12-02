@@ -35,7 +35,7 @@ class ProductController extends Controller
             ->get()
             ->map(function ($product) {
                 $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
-                // $product->is_favorited = Auth::user() && $product->favouritedByUsers->contains(Auth::id());
+                $product->is_favorited = Auth::user() && $product->favouritedByUsers->contains(Auth::id());
                 return $product;
             });
 

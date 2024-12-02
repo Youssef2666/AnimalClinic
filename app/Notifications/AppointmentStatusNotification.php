@@ -3,11 +3,12 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\DatabaseMessage;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AppointmentStatusNotification extends Notification implements ShouldQueue
 {
@@ -26,9 +27,16 @@ class AppointmentStatusNotification extends Notification implements ShouldQueue
         $this->data = $data;
         $this->fcmToken = $fcmToken;
         $this->access_token = $access_token;
+        Log::info([
+            'title' => $title,
+            'fcmToken' => $fcmToken,
+            'access_token' => $access_token,
+        ]);
     }
 
-    public function toMail($notifiable){
+    public function toMail($notifiable)
+    {
+        Log::info('toMail method triggered');
         return (new MailMessage)
             ->subject($this->title)
             ->greeting($this->body)
@@ -38,11 +46,12 @@ class AppointmentStatusNotification extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['mail','database', 'fcm'];
+        return ['fcm', 'database', 'mail'];
     }
 
     public function toDatabase($notifiable)
     {
+        Log::info('toDatabase method triggered');
         return new DatabaseMessage([
             'title' => $this->title,
             'body' => $this->body,
@@ -52,7 +61,9 @@ class AppointmentStatusNotification extends Notification implements ShouldQueue
 
     public function toFcm($notifiable)
     {
+        Log::info('toFcm method triggered');
         if ($this->fcmToken) {
+            Log::info('Sending FCM notification to token: ' . $this->fcmToken);
             Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->access_token,
                 'Content-Type' => 'application/json',
@@ -66,7 +77,8 @@ class AppointmentStatusNotification extends Notification implements ShouldQueue
                     'data' => $this->data,
                 ],
             ]);
+        } else {
+            Log::warning('FCM token is missing');
         }
     }
 }
-

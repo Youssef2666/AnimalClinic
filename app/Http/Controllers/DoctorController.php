@@ -26,9 +26,6 @@ class DoctorController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreDoctorRequest $request)
     {
         try {
@@ -105,8 +102,6 @@ class DoctorController extends Controller
 
         return response()->json($decodedDoctors);
     }
-
-
     public function getDoctorWorkDays($id){
         $doctor = Doctor::findOrFail($id);
         $days = $doctor->workDays()->pluck('day');

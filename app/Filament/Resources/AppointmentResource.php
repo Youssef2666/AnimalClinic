@@ -14,6 +14,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 // use Filament\Forms\Components\TextInput;
 
@@ -82,24 +84,32 @@ class AppointmentResource extends Resource
                             ->required(),
                     ])
                     ->action(function (Model $record, array $data) {
+                        // Update status
                         $record->status = $data['status'];
                         $record->save();
 
+                        // Prepare notification details
                         $title = "Appointment Status Changed";
                         $body = "The status of your appointment has been updated to {$data['status']}.";
                         $notificationData = [
                             'appointment_id' => $record->id,
                             'status' => $data['status'],
                         ];
-                        $fcmToken = $record->user->fcm_token ?? null;
-                        $access_token = $record->user->access_token ?? null;
-            
-                        // Send the notification
-                        $record->user->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken, $access_token));
-                        
 
-                    })
-                    // ->visible(fn(Model $record) => $record->status !== AppointmentStatus::CONFIRMED->value),
+                        $fcmToken = Auth::user()->fcm_token ?? null;
+                        $access_token = Auth::user()->access_token ?? null;
+                        Log::info([
+                            'fcmToken' => Auth::user()->fcm_token,
+                            'access_token' => Auth::user()->access_token,
+                        ]);
+                        Auth::user()->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken, $access_token));
+                        if ($record->animal->user) {
+                        } else {
+                            Log::error('User not found for animal ID: ' . $record->animal->id);
+                        }
+                    }),
+
+                // ->visible(fn(Model $record) => $record->status !== AppointmentStatus::CONFIRMED->value),
 
             ])
             ->bulkActions([

@@ -117,4 +117,9 @@ Route::get('get-doctor-work-days/{id}', [DoctorController::class, 'getDoctorWork
 Route::post('doctors-redis', [DoctorController::class, 'saveDoctorsToRedis']);
 Route::get('doctors-redis-all', [DoctorController::class, 'getDoctorsFromRedis']);
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('user-phones/send-otp', [UserPhoneController::class, 'sendOtp']);
+    Route::post('user-phones/verify-otp', [UserPhoneController::class, 'verifyOtp']);
+});
+
 

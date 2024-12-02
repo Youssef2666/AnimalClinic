@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\traits\ResponseTrait;
+use App\Models\UserPhone;
+use App\Services\OTPService;
 use Illuminate\Http\Request;
+use App\traits\ResponseTrait;
+use App\Services\VonageService;
 use Illuminate\Support\Facades\Auth;
 
 class UserPhoneController extends Controller
 {
     use ResponseTrait;
+
+    public function __construct(private OTPService $otpService){
+    }
     public function index()
     {
         $phones = Auth::user()?->phones()->get();
@@ -63,5 +69,40 @@ class UserPhoneController extends Controller
         $phone = User::findOrFail($id)->phones()->first();
         $phone->delete();
         return $this->success(null, 'phone deleted successfully');
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $request->validate(['phone_number' => 'required|exists:user_phones,phone_number']);
+
+        $phone = UserPhone::where('phone_number', $request->phone_number)->first();
+
+        if ($phone->isVerified()) {
+            return response()->json(['error' => 'This phone number is already verified.'], 422);
+        }
+
+        if ($this->otpService->sendOtp($phone->phone_number)) {
+            return response()->json(['success' => 'OTP sent successfully.']);
+        }
+
+        return response()->json(['error' => 'Failed to send OTP.'], 500);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'phone_number' => 'required|exists:user_phones,phone_number',
+            'otp' => 'required|integer',
+        ]);
+
+        $phone = UserPhone::where('phone_number', $request->phone_number)->first();
+
+        if ($this->otpService->validateOtp($phone->phone_number, $request->otp)) {
+            $phone->update(['verified_at' => now()]);
+
+            return response()->json(['success' => 'Phone number verified successfully.']);
+        }
+
+        return response()->json(['error' => 'Invalid OTP.'], 422);
     }
 }
