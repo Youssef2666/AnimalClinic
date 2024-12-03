@@ -22,7 +22,6 @@ class MedicalRecordResource extends Resource
     protected static ?string $model = MedicalRecord::class;
     protected static ?string $modelLabel =  'سجل صحي';
     protected static ?string $pluralModelLabel = 'سجلات صحية';
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     /**

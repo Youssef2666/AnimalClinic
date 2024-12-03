@@ -59,6 +59,18 @@ class AuthController extends Controller
         }
     }
 
+    public function sendOtp(Request $request){
+        try {
+            $email = $request->input('email');
+            $otpCode = $this->otp->generate($email, 'numeric', 6, 60);
+            $user = User::where('email', $email)->first();
+            $user->notify(new EmailVerificationNotification($user->email, $otpCode->token));
+            return $this->success($otpCode->token, 'OTP sent successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 500);
+        }
+    }
+
     public function verifyOtp(OtpVerifyRequest $request)
     {
         try {

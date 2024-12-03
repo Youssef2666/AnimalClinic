@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
 use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\traits\ResponseTrait;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\LowStockNotification;
 
 class OrderController extends Controller
 {
@@ -37,24 +40,34 @@ class OrderController extends Controller
     public function addProductsToOrder(Request $request, $orderId)
     {
         $order = Order::findOrFail($orderId);
-
+        $admin = User::where('email', 'youssefboss266@gmail.com')->first();
         $products = $request->input('products');
-
-        foreach ($products as $productData) {
-            $product = Product::find($productData['product_id']);
-
-            if (!$product) {
-                return response()->json(['error' => 'المنتج غير موجود'], 404);
+    
+            foreach ($products as $productData) {
+                $product = Product::find($productData['product_id']);
+    
+                if (!$product) {
+                    return $this->error('المنتج غير موجود', 404);
+                }
+    
+                if ($product->stock < $productData['quantity']) {
+                    return $this->error('الكمية المطلوبة غير متوفرة للمنتج: ' . $product->name, 400);
+                }
+                $order->products()->attach($product->id, [
+                    'quantity' => $productData['quantity'],
+                    'price_at_purchase' => $product->price,
+                ]);
+    
+                $product->stock -= $productData['quantity'];
+                $product->save();
+                $admin->notify(new LowStockNotification($product));
             }
 
-            $order->products()->attach($product->id, [
-                'quantity' => $productData['quantity'],
-                'price_at_purchase' => $product->price
-            ]);
-        }
-
+    
         return response()->json(['message' => 'تم إضافة المنتجات إلى الطلب', 'order' => $order], 201);
     }
+    
+
 
     public function updateOrderPaymentMethod(Request $request, $orderId){
         $order = Order::findOrFail($orderId);

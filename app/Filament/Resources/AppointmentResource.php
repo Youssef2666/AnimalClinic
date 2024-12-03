@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-// use Filament\Forms\Components\TextInput;
 
 class AppointmentResource extends Resource
 {
@@ -35,19 +34,15 @@ class AppointmentResource extends Resource
                     ->relationship('animal', 'name')
                     ->label('اسم الحيوان')
                     ->required(),
-
                 Forms\Components\Select::make('status')
                     ->label('الحالة')
                     ->options(array_column(AppointmentStatus::cases(), 'name', 'value')),
-
                 TextInput::make('interview')
                     ->label('نوع المقابلة')
                     ->required(),
-
                 TextInput::make('date')
                     ->label('تاريخ المقابلة')
                     ->required(),
-
             ]);
     }
 
@@ -84,11 +79,9 @@ class AppointmentResource extends Resource
                             ->required(),
                     ])
                     ->action(function (Model $record, array $data) {
-                        // Update status
                         $record->status = $data['status'];
                         $record->save();
 
-                        // Prepare notification details
                         $title = "Appointment Status Changed";
                         $body = "The status of your appointment has been updated to {$data['status']}.";
                         $notificationData = [
@@ -98,11 +91,12 @@ class AppointmentResource extends Resource
 
                         $fcmToken = Auth::user()->fcm_token ?? null;
                         $access_token = Auth::user()->access_token ?? null;
+                        $data['animal_name'] = $record->animal->name;
                         Log::info([
                             'fcmToken' => Auth::user()->fcm_token,
                             'access_token' => Auth::user()->access_token,
                         ]);
-                        Auth::user()->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken, $access_token));
+                        Auth::user()->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken, $access_token, animal_name: $record->animal->name));
                         if ($record->animal->user) {
                         } else {
                             Log::error('User not found for animal ID: ' . $record->animal->id);

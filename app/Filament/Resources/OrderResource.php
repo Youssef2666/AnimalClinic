@@ -78,6 +78,7 @@ class OrderResource extends Resource
                 ->icon('heroicon-s-check-badge')
                 ->action(function (Order $record, array $data) {
                     $record->update(['status' => $data['status']]);
+                    $record->user->notify(new \App\Notifications\OrderStatusChangedNotification($record));
                 })
                 ->visible(fn (Order $record) => $record->status !== OrderStatus::DELIVERED->value)           
             ])

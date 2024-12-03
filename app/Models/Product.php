@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Notifications\LowStockNotification;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
@@ -32,4 +34,19 @@ class Product extends Model
     {
         return $this->belongsToMany(User::class, 'favorite_products');
     }
+
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::saving(function ($product) {
+    //         $lowStockThreshold = 5;
+
+    //         if ($product->stock > 0 && $product->stock <= $lowStockThreshold) {
+    //             // Notify the admin(s)
+    //             $admins = User::where('role', 'admin')->get();
+    //             Notification::send($admins, new LowStockNotification($product));
+    //         }
+    //     });
+    // }
 }

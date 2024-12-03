@@ -10,6 +10,8 @@
         "filament/notifications": "^3.2",
         "ichtrojan/laravel-otp": "^2.0",
         "jubaer/zoom-laravel": "^1.3",
+        "kreait/laravel-firebase": "^5.10",
+        "laravel-notification-channels/fcm": "^4.5",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.1",
         "laravel/sanctum": "^4.0",
