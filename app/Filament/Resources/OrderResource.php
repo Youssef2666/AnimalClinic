@@ -10,12 +10,14 @@ use Filament\Forms\Form;
 use App\Enums\OrderStatus;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Support\Colors\Color;
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers\ProductsRelationManager;
+use App\Notifications\OrderStatusChangedNotification;
 use App\Filament\Resources\OrderResource\Widgets\OrderOverview;
+use App\Filament\Resources\OrderResource\RelationManagers\ProductsRelationManager;
+use Filament\Notifications\Notification;
 
 class OrderResource extends Resource
 {
@@ -78,7 +80,7 @@ class OrderResource extends Resource
                 ->icon('heroicon-s-check-badge')
                 ->action(function (Order $record, array $data) {
                     $record->update(['status' => $data['status']]);
-                    $record->user->notify(new \App\Notifications\OrderStatusChangedNotification($record));
+                    $record->user->notify(new OrderStatusChangedNotification($record));    
                 })
                 ->visible(fn (Order $record) => $record->status !== OrderStatus::DELIVERED->value)           
             ])

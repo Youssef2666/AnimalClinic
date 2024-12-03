@@ -21,8 +21,6 @@ class OrderController extends Controller
         return $this->success($orders);
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      */
@@ -43,16 +41,18 @@ class OrderController extends Controller
         $admin = User::where('email', 'youssefboss266@gmail.com')->first();
         $products = $request->input('products');
     
+        try {
             foreach ($products as $productData) {
                 $product = Product::find($productData['product_id']);
     
                 if (!$product) {
-                    return $this->error('المنتج غير موجود', 404);
+                    throw new \Exception('المنتج غير موجود');
                 }
     
                 if ($product->stock < $productData['quantity']) {
-                    return $this->error('الكمية المطلوبة غير متوفرة للمنتج: ' . $product->name, 400);
+                    throw new \Exception('الكمية المطلوبة غير متوفرة للمنتج: ' . $product->name);
                 }
+    
                 $order->products()->attach($product->id, [
                     'quantity' => $productData['quantity'],
                     'price_at_purchase' => $product->price,
@@ -60,15 +60,17 @@ class OrderController extends Controller
     
                 $product->stock -= $productData['quantity'];
                 $product->save();
-                $admin->notify(new LowStockNotification($product));
             }
-
     
-        return response()->json(['message' => 'تم إضافة المنتجات إلى الطلب', 'order' => $order], 201);
+            return response()->json(['message' => 'تم إضافة المنتجات إلى الطلب', 'order' => $order], 201);
+    
+        } catch (\Exception $e) {
+            $order->delete();
+    
+            return $this->error($e->getMessage(), 400);
+        }
     }
     
-
-
     public function updateOrderPaymentMethod(Request $request, $orderId){
         $order = Order::findOrFail($orderId);
         $order->payment_method_id = $request->payment_method_id;

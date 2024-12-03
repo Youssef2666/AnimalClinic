@@ -18,7 +18,7 @@ class LowStockNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database'];
+        return ['mail'];
     }
 
     public function toMail($notifiable)
