@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{$subject}}</title>
 </head>
-<body>
+<body dir="rtl">
     <h2>{{$subject}}</h2>
     <h3>{{$mailMessage}}</h3>
     <h3>{{$potp->token}}</h3>
