@@ -88,9 +88,18 @@ class ProductController extends Controller
     }
 
     public function getMyFavoriteProducts(Request $request)
-    {
-        $favorites = Auth::user()->favoriteProducts()->with('category')->get();
-        return $this->success($favorites);
-    }
+{
+    $favorites = Auth::user()->favoriteProducts()
+        ->with('category')
+        ->get()
+        ->map(function ($product) {
+            $product->image_url = $product->image ? asset('storage/' . $product->image) : null;
+            $product->is_favorited = true;
+            return $product;
+        });
+
+    return $this->success($favorites);
+}
+
 
 }

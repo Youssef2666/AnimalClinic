@@ -19,13 +19,14 @@ use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\UserPhoneController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\VaccinationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\AnimalCategoryController;
 use App\Http\Controllers\LocalBankCardsController;
+use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\SurgeryCategoryController;
 use App\Http\Controllers\MedicineCategoryController;
-use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\VaccinationCategoryController;
 
 Route::get('/test',function(){
@@ -46,8 +47,7 @@ Route::post('send-otp', [AuthController::class, 'sendOtp']);
 
 
 
-// Routes for authenticated users
-Route::get('authme', [AuthController::class, 'authme'])->middleware(['auth:sanctum']);  //, 'verified-user'
+Route::get('authme', [AuthController::class, 'authme'])->middleware(['auth:sanctum']); 
 Route::middleware(['auth:sanctum', 'status'])->group(function () {
     Route::delete('logout', [AuthController::class, 'logout']);
     Route::apiResources([
@@ -123,4 +123,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('user-phones/verify-otp', [UserPhoneController::class, 'verifyOtp']);
 });
 
-
+Route::get('/notifications', [NotificationController::class, 'getUserNotifications'])->middleware('auth:sanctum');

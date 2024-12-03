@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
-            $table->id();
+            $table->id()->index();
             $table->foreignIdFor(Doctor::class);
             $table->foreignIdFor(Animal::class);
             $table->date('date');

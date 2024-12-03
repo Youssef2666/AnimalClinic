@@ -25,7 +25,6 @@ class PasswordController extends Controller
     public function forgotPassword(ForgotRequest $request)
 {
     try {
-        // Validation is handled by the request; we don't need to check for the user again.
         $input = $request->validated();
 
         // Generate OTP and store it

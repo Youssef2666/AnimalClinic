@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\LocalBankCardsController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\LocalBankCardsController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,3 +45,6 @@ Route::get('/payment/failure', function () {
 })->name('payment.failure');
 
 Route::get('/payment/callback', [LocalBankCardsController::class, 'handleCallback'])->name('payment.callback')->middleware('auth:sanctum');
+
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');
