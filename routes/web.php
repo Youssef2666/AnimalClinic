@@ -44,7 +44,7 @@ Route::get('/payment/failure', function () {
     return view('payment.failure');
 })->name('payment.failure');
 
-Route::get('/payment/callback', [LocalBankCardsController::class, 'handleCallback'])->name('payment.callback')->middleware('auth:sanctum');
+Route::get('/payment/callback', [LocalBankCardsController::class, 'handleCallback'])->name('payment.callback');
 
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');

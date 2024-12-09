@@ -81,7 +81,7 @@ class ProductController extends Controller
         //
     }
 
-    public function putProductInFavorite(Request $request, $id)
+    public function toggleProductInFavorite(Request $request, $id)
     {
         Auth::user()->favoriteProducts()->toggle($id);
         return $this->success();

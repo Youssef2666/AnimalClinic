@@ -9,8 +9,8 @@ class LocalBankCardsController extends Controller
 {
     public function initiatePayment(Request $request)
     {
-        $amount = $request->amount; // e.g., 5.0
-        $invoiceNo = 'inv-' . uniqid(); // Unique invoice number
+        $amount = $request->amount;
+        $invoiceNo = 'inv-' . uniqid();
         $returnUrl = route('payment.callback');
 
         try {
@@ -48,30 +48,56 @@ class LocalBankCardsController extends Controller
     public function handleCallback(Request $request)
     {
         $parameters = $request->all();
-        info('Callback parameters:', $request->all());
-    
         try {
             $api = new PlutuLocalBankCards;
             $api->setSecretKey(env('PLUTU_SECRET_KEY'));
             $callback = $api->callbackHandler($parameters);
-    
+
             if ($callback->isApprovedTransaction()) {
                 $transactionId = $callback->getParameter('transaction_id');
-    
+
                 return response()->json([
-                    'message' => 'Payment successful',
+                    'message' => 'تم الدفع بنجاح',
                     'transactionId' => $transactionId,
                 ]);
             } elseif ($callback->isCanceledTransaction()) {
                 return response()->json([
-                    'message' => 'Payment canceled',
+                    'message' => 'تم إلغاء الدفع',
                 ]);
             }
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Payment failed',
+                'message' => 'فشل الدفع',
                 'error' => $e->getMessage(),
             ]);
         }
     }
+
+    public function checkPaymentStatus(Request $request)
+    {
+        $transactionId = $request->transactionId;
+        try {
+            $api = new PlutuLocalBankCards;
+            $api->setSecretKey(env('PLUTU_SECRET_KEY'));
+            $status = $api->getPaymentStatus($transactionId);
+
+            if ($status->isApproved()) {
+                return response()->json([
+                    'message' => 'Payment successful',
+                    'status' => 'success',
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Payment failed or pending',
+                    'status' => 'failed',
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error checking payment status',
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
 }

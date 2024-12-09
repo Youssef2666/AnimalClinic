@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enums\AppointmentInterviewStatus;
 use App\Http\Requests\StoreAppointmentRequest;
+use App\Models\Animal;
 use App\Models\Appointment;
 use App\Models\ZoomMeeting;
 use App\traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Jubaer\Zoom\Facades\Zoom;
 
 class AppointmentController extends Controller
@@ -16,7 +18,7 @@ class AppointmentController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $appointments = Appointment::with(['zoomAppointment' => function ($query){
+        $appointments = Appointment::with(['zoomAppointment' => function ($query) {
             $query->withoutGlobalScope('doctor_appointments');
         }])->withoutGlobalScope('user_appointments')->get();
         return $this->success($appointments, 'Appointments retrieved successfully', 200);
@@ -24,6 +26,20 @@ class AppointmentController extends Controller
 
     public function store(StoreAppointmentRequest $request)
     {
+        $userId = Auth::id();
+        $animalCount = Animal::where('user_id', $userId)->count();
+
+        $todayDate = now()->format('Y-m-d');
+        $todayAppointmentsCount = Appointment::withoutGlobalScope('user_appointments')
+            ->whereDate('date', $todayDate)
+            ->whereHas('animal', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->count();
+
+        if ($todayAppointmentsCount >= $animalCount) {
+            return $this->error('لقد تم تجاوز حدود المواعيد في اليوم الواحد', 403);
+        }
         $appointment = Appointment::create([
             'doctor_id' => $request->doctor_id,
             'animal_id' => $request->animal_id,
@@ -69,7 +85,7 @@ class AppointmentController extends Controller
     public function getDoctorAppointments(string $id)
     {
         $appointments = Appointment::withoutGlobalScope('user_appointments')
-            ->with(['zoomAppointment' => function ($query){
+            ->with(['zoomAppointment' => function ($query) {
                 $query->withoutGlobalScope('doctor_appointments');
             }])
             ->where('doctor_id', $id)
@@ -84,7 +100,7 @@ class AppointmentController extends Controller
     public function show(string $id)
     {
         $appointment = Appointment::with(
-            ['zoomAppointment' => function ($query){
+            ['zoomAppointment' => function ($query) {
                 $query->withoutGlobalScope('doctor_appointments');
             }])->withoutGlobalScope('user_appointments')->find($id);
         return $this->success($appointment);
@@ -95,7 +111,9 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $appointment = Appointment::withoutGlobalScope('user_appointments')->find($id);
+        $appointment->update($request->all());
+        return $this->success($appointment, 'تم تحديث الموعد بنجاح');
     }
 
     /**
@@ -105,4 +123,5 @@ class AppointmentController extends Controller
     {
         //
     }
+
 }

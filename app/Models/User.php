@@ -140,4 +140,8 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Doctor::class);
     }
 
+    public function appointments(){
+        return $this->hasManyThrough(Appointment::class, Animal::class);
+    }
+
 }

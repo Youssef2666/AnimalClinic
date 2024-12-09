@@ -38,17 +38,17 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
 // Route::post('/forgot-password', [PasswordController::class, 'forgotPassword']);
 // Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
+Route::post('login', [AuthController::class, 'login'])->middleware('verified-user');
 Route::post('/forget-password', [PasswordController::class, 'sendResetLinkEmail']);
 Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('send-otp', [AuthController::class, 'sendOtp']);
-
-
-
 Route::get('authme', [AuthController::class, 'authme'])->middleware(['auth:sanctum']); 
-Route::middleware(['auth:sanctum', 'status'])->group(function () {
+
+
+
+Route::middleware(['auth:sanctum', 'status', 'verified-user'])->group(function () {
     Route::delete('logout', [AuthController::class, 'logout']);
     Route::apiResources([
         'animals' => AnimalController::class,
@@ -71,7 +71,7 @@ Route::middleware(['auth:sanctum', 'status'])->group(function () {
     Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
     Route::get('appointments/{id}/doctor', [AppointmentController::class, 'getDoctorAppointments']);
     Route::post('orders/{id}/add-products', [OrderController::class, 'addProductsToOrder']);
-    Route::post('products/{id}/favorite', [ProductController::class, 'putProductInFavorite']);
+    Route::post('products/{id}/favorite', [ProductController::class, 'toggleProductInFavorite']);
     Route::get('productss/favorite/get', [ProductController::class, 'getMyFavoriteProducts']);
 });
 
@@ -105,6 +105,7 @@ Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);
 
 //Local bank cards
 Route::post('local-bank-cards', [LocalBankCardsController::class, 'initiatePayment'])->name('payment.initiate');
+Route::post('local-bank-cards/check-payment', [LocalBankCardsController::class, 'checkPaymentStatus']);
 
 
 //FCM
