@@ -96,7 +96,7 @@ class AppointmentResource extends Resource
                             'fcmToken' => Auth::user()->fcm_token,
                             'access_token' => Auth::user()->access_token,
                         ]);
-                        Auth::user()->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken, $access_token, animal_name: $record->animal->name));
+                        $record->animal->user->notify(new AppointmentStatusNotification($title, $body, $notificationData, $fcmToken, $access_token, animal_name: $record->animal->name, status: $data['status']));
                         if ($record->animal->user) {
                         } else {
                             Log::error('User not found for animal ID: ' . $record->animal->id);

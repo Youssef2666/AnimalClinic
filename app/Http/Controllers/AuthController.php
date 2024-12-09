@@ -45,7 +45,6 @@ class AuthController extends Controller
             }
 
             $user = User::where('email', $request['email'])->firstOrFail();
-
             $token = $user->createToken('auth_token')->plainTextToken;
 
             $user->update([
@@ -75,7 +74,6 @@ class AuthController extends Controller
         try {
             $email = $request->input('email');
             $otpCode = $request->input('otp');
-
             $otpValidation = $this->otp->validate($email, $otpCode);
 
             if (!$otpValidation->status) {

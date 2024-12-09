@@ -27,10 +27,10 @@ class MedicalRecordUpdatedNotification extends Notification
     {
         return (new MailMessage)
             ->subject('تحديث سجل طبي')
-            ->greeting('أهلا ' . $notifiable->name . ',')
-            ->line('تم تحديث سجل حيوانك بنجاح')
-            ->line('الحيوان: ' . $this->medicalRecord->animal->name)
-            ->line('ملاحظات: ' . $this->medicalRecord->notes)
-            ->line('شكرا لك على ثقتك بنا.');
+            ->markdown('mail.medical_record_updated', [
+                'greeting' => 'أهلا ' . $notifiable->name . ',',
+                'message' => 'تم تحديث سجل حيوانك بنجاح',
+                'animal_name' => $this->medicalRecord->animal->name,
+        ]);
     }
 }

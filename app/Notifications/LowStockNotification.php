@@ -24,10 +24,13 @@ class LowStockNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Low Stock Alert')
-            ->line('The stock for ' . $this->product->name . ' is low.')
-            ->line('Current stock: ' . $this->product->stock)
-            ->line('Please restock as soon as possible.');
+            ->subject('تنبيه انخفاض المخزون')
+            ->markdown('mail.low_stock_alert', [
+                'greeting' => 'أهلا, ' . $notifiable->name,
+                'message' => 'المخزون للمنتج ' . $this->product->name . ' منخفض.',
+                'stock' => 'المخزون الحالي: ' . $this->product->stock,
+                'action' => 'يرجى إعادة التوريد في أقرب وقت ممكن.'
+            ]);
     }
 
     public function toArray($notifiable)
@@ -39,3 +42,4 @@ class LowStockNotification extends Notification
         ];
     }
 }
+

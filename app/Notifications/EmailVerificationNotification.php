@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Log;
 class EmailVerificationNotification extends Notification
 {
     use Queueable;
-
     public $message;
     public $subject;
     public $fromEmail;
@@ -25,7 +24,6 @@ class EmailVerificationNotification extends Notification
         $this->fromEmail = 'kingyoussef76@gmail.com';
         $this->mailer = 'smtp';
         $this->otp = $otp;
-        Log::info('EmailVerificationNotification constructor');
         $this->receiverEmail = $receiverEmail;
     }
 
@@ -47,9 +45,14 @@ class EmailVerificationNotification extends Notification
         $otp = $this->otp->generate($notifiable->email, 'numeric', 6, 60);
         return (new MailMessage)
             ->subject($this->subject)
-            ->greeting('Hello, ' . $notifiable->name)
+            ->greeting('أهلا, ' . $notifiable->name)
             ->line($this->message)
-            ->line('Code: ' . $otp->token);
+            ->line('Code: ' . $otp->token)
+            ->markdown('mail.custom_verification', [
+                'greeting' => 'أهلا, ' . $notifiable->name,
+                'message' => $this->message,
+                'code' => $otp->token,
+            ]);
     }
 
     /**

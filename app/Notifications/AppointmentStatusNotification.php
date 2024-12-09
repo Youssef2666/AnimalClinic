@@ -3,14 +3,11 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use NotificationChannels\Fcm\FcmChannel;
-use NotificationChannels\Fcm\FcmMessage;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\DatabaseMessage;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AppointmentStatusNotification extends Notification
 {
@@ -22,8 +19,9 @@ class AppointmentStatusNotification extends Notification
     protected $fcmToken;
     protected $access_token;
     protected $animal_name;
+    protected $status;
 
-    public function __construct($title, $body, $data = [], $fcmToken = null, $access_token = null, $animal_name = null)
+    public function __construct($title, $body, $data = [], $fcmToken = null, $access_token = null, $animal_name = null, $status = null)
     {
         $this->title = $title;
         $this->body = $body;
@@ -31,7 +29,8 @@ class AppointmentStatusNotification extends Notification
         $this->fcmToken = $fcmToken;
         $this->access_token = $access_token;
         $this->animal_name = $animal_name;
-        
+        $this->status = $status;
+
         Log::info([
             'title' => $title,
             'fcmToken' => $fcmToken,
@@ -41,17 +40,32 @@ class AppointmentStatusNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['fcm','mail', 'database'];
+        return ['mail', 'database'];
     }
 
     public function toMail($notifiable)
     {
-        Log::info('toMail method triggered');
+        switch ($this->status) {
+            case 'canceled':
+                $statusMessage = 'تم إلغاء الموعد';
+                break;
+            case 'completed':
+                $statusMessage = 'تم إتمام الموعد';
+                break;
+            case 'confirmed':
+                $statusMessage = 'تم تأكيد الموعد';
+                break;
+            default:
+                $statusMessage = 'تم تغيير حالة الموعد';
+        }
+
         return (new MailMessage)
             ->subject('تغيير حالة الموعد')
-            ->greeting('أهلا ' . $notifiable->name . ',')
-            ->line('تم تغيير حالة الموعد ')
-            ->line('الحيوان: ' . $this->animal_name);
+            ->markdown('mail.appointment_status_changed', [
+                'greeting' => 'أهلا ' . $notifiable->name . ',',
+                'message' => $statusMessage,
+                'animal_name' => $this->animal_name,
+            ]);
     }
 
     public function toDatabase($notifiable)
@@ -76,7 +90,6 @@ class AppointmentStatusNotification extends Notification
     //         Log::warning('FCM token is missing');
     //     }
     // }
-
 
     public function toFcm($notifiable)
     {
