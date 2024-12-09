@@ -40,7 +40,7 @@ Route::get('/user', function (Request $request) {
 Route::post('register', [AuthController::class, 'register']);
 // Route::post('/forgot-password', [PasswordController::class, 'forgotPassword']);
 // Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
-Route::post('login', [AuthController::class, 'login'])->middleware('verified-user');
+Route::post('login', [AuthController::class, 'login']);
 Route::post('/forget-password', [PasswordController::class, 'sendResetLinkEmail']);
 Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('send-otp', [AuthController::class, 'sendOtp']);
