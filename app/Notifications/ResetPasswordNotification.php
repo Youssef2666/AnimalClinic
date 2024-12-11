@@ -3,10 +3,9 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class ResetPasswordNotification extends Notification
 {
@@ -18,7 +17,7 @@ class ResetPasswordNotification extends Notification
     public $mailer;
     private $otp;
     public $receiverEmail;
-    public function __construct($email,$otp)
+    public function __construct($email, $otp)
     {
         $this->message = "use the below code to reset your password";
         $this->subject = "Paasword Reset";
@@ -45,10 +44,10 @@ class ResetPasswordNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject($this->subject)
-                    ->greeting('Hello, '.$notifiable->name)
-                    ->line($this->message)
-                    ->line('Code: '.$this->otp);
+            ->subject($this->subject)
+            ->greeting('Hello, ' . $notifiable->name)
+            ->line($this->message)
+            ->line('Code: ' . $this->otp);
     }
 
     /**

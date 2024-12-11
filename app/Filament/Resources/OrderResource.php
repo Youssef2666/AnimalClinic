@@ -28,7 +28,10 @@ class OrderResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
 
-    
+    public static function canAccess(): bool
+    {
+        return Auth::user()->isAdmin();
+    }
    
     public static function form(Form $form): Form
     {

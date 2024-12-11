@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Enums\OrderStatus;
 use Filament\Tables\Table;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Auth;
 use Filament\Tables\Columns\TextColumn;
 use App\Filament\Resources\OrderResource;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -18,6 +19,11 @@ class LatestOrders extends BaseWidget
     protected function getTableHeading(): string
     {
         return 'اخر الطلبات';
+    }
+
+    public static function canView(): bool
+    {
+        return Auth::user()->isAdmin();
     }
 
     public function table(Table $table): Table

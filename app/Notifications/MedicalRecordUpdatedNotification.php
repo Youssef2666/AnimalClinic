@@ -20,7 +20,7 @@ class MedicalRecordUpdatedNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     public function toMail($notifiable)
@@ -33,4 +33,6 @@ class MedicalRecordUpdatedNotification extends Notification
                 'animal_name' => $this->medicalRecord->animal->name,
         ]);
     }
+
+    
 }

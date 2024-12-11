@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
-use App\Enums\OrderStatus;
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\traits\ResponseTrait;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Notifications\LowStockNotification;
 
 class OrderController extends Controller
 {
@@ -30,7 +28,7 @@ class OrderController extends Controller
             'user_id' => Auth::id(),
             'order_date' => $request->order_date,
             'status' => OrderStatus::CONFIRMED->value,
-            'payment_method_id' => $request->payment_method_id
+            'payment_method_id' => $request->payment_method_id,
         ]);
         return $this->success($order);
     }
@@ -40,38 +38,39 @@ class OrderController extends Controller
         $order = Order::findOrFail($orderId);
         $admin = User::where('email', 'youssefboss266@gmail.com')->first();
         $products = $request->input('products');
-    
+
         try {
             foreach ($products as $productData) {
                 $product = Product::find($productData['product_id']);
-    
+
                 if (!$product) {
                     throw new \Exception('المنتج غير موجود');
                 }
-    
+
                 if ($product->stock < $productData['quantity']) {
                     throw new \Exception('الكمية المطلوبة غير متوفرة للمنتج: ' . $product->name);
                 }
-    
+
                 $order->products()->attach($product->id, [
                     'quantity' => $productData['quantity'],
                     'price_at_purchase' => $product->price,
                 ]);
-    
+
                 $product->stock -= $productData['quantity'];
                 $product->save();
             }
-    
+
             return response()->json(['message' => 'تم إضافة المنتجات إلى الطلب', 'order' => $order], 201);
-    
+
         } catch (\Exception $e) {
             $order->delete();
-    
+
             return $this->error($e->getMessage(), 400);
         }
     }
-    
-    public function updateOrderPaymentMethod(Request $request, $orderId){
+
+    public function updateOrderPaymentMethod(Request $request, $orderId)
+    {
         $order = Order::findOrFail($orderId);
         $order->payment_method_id = $request->payment_method_id;
         $order->save();
@@ -82,20 +81,19 @@ class OrderController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
-{
-    $order = Auth::user()
-        ->orders()
-        ->where('id', $id)
-        ->with('products.category')
-        ->first();
+    {
+        $order = Auth::user()
+            ->orders()
+            ->where('id', $id)
+            ->with('products.category')
+            ->first();
 
-    if (!$order) {
-        return $this->error('الطلب غير موجود', 404);
+        if (!$order) {
+            return $this->error('الطلب غير موجود', 404);
+        }
+
+        return $this->success($order);
     }
-
-    return $this->success($order);
-}
-
 
     /**
      * Update the specified resource in storage.

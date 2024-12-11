@@ -7,6 +7,7 @@ use App\Models\Animal;
 use App\Models\AnimalCategory;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Illuminate\Support\Facades\Auth;
 
 class AnimalsOverview extends BaseWidget
 {
@@ -45,5 +46,10 @@ class AnimalsOverview extends BaseWidget
         }
 
         return $data;
+    }
+
+    public static function canView(): bool
+    {
+        return Auth::user()->isAdmin();
     }
 }

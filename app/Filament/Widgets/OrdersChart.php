@@ -2,10 +2,11 @@
 
 namespace App\Filament\Widgets;
 
-use App\Enums\AppointmentStatus;
 use App\Models\Order;
+use App\Enums\AppointmentStatus;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class OrdersChart extends ChartWidget
 {
@@ -33,5 +34,10 @@ class OrdersChart extends ChartWidget
     protected function getType(): string
     {
         return 'bar';
+    }
+
+    public static function canView(): bool
+    {
+        return Auth::user()->isAdmin();
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Product;
 use Carbon\Carbon;
+use App\Models\Product;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Auth;
 
 class ProductsChart extends ChartWidget
 {
@@ -48,6 +49,11 @@ class ProductsChart extends ChartWidget
             'productsPerMonth' => $productsPerMonth,
             'months' => $months,
         ];
+    }
+
+    public static function canView(): bool
+    {
+        return Auth::user()->isAdmin();
     }
 
 }

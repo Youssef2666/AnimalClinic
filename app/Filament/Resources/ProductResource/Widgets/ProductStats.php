@@ -19,4 +19,5 @@ class ProductStats extends BaseWidget
     {
         return 1;
     }
+    
 }

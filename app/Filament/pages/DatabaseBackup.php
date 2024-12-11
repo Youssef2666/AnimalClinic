@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 
@@ -12,6 +13,11 @@ class DatabaseBackup extends Page
 
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
     protected static string $view = 'filament.pages.database-backup';
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->isAdmin();
+    }
 
     
     public $backupFile;
