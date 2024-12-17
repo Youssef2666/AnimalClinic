@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OrderStatus;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\User;
-use App\traits\ResponseTrait;
+use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
+use App\traits\ResponseTrait;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\OrderStatusChangedNotification;
 
 class OrderController extends Controller
 {
@@ -88,6 +89,7 @@ class OrderController extends Controller
         $order->save();
 
         return $this->success($order, 'تم إلغاء الطلب بنجاح');
+        Auth::user()->notify(new OrderStatusChangedNotification($order));
         }
         catch (\Exception $e) {
             return $this->error($e->getMessage(), 400);
