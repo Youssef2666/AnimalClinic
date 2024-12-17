@@ -42,9 +42,7 @@ class UserPhoneController extends Controller
         return response()->json(['success' => 'تم إضافة رقم الهاتف بنجاح'], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(string $id)
     {
         $phone = User::findOrFail($id)->phones()->first();
@@ -56,9 +54,9 @@ class UserPhoneController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $phone = User::findOrFail($id)->phones()->first();
+        $phone = UserPhone::where('id', $id)->where('user_id', Auth::user()->id)->first();
         $phone->update($request->all());
-        return $this->success($phone, 'phone updated successfully');
+        return $this->success($phone, 'تم تحديث رقم الهاتف بنجاح');
     }
 
     /**
