@@ -19,7 +19,7 @@ class DatabaseBackup extends Page
         return Auth::user()->isAdmin();
     }
 
-    
+
     public $backupFile;
 
     public function getBackupsProperty()
@@ -63,7 +63,7 @@ class DatabaseBackup extends Page
     public function restoreDatabase()
     {
         if (!$this->backupFile) {
-            session()->flash('error', 'Please upload a backup file.');
+            session()->flash('error', 'من فضلك قم برفع ملف النسخة');
             return;
         }
 
@@ -81,15 +81,15 @@ class DatabaseBackup extends Page
         exec($command, $output, $result);
 
         if ($result === 0) {
-            session()->flash('success', 'Database restored successfully!');
+            session()->flash('success', 'تم استعادة قاعدة البيانات بنجاح!');
         } else {
-            session()->flash('error', 'Failed to restore the database.');
+            session()->flash('error', 'فشل استعادة قاعدة البيانات.');
         }
     }
 
     public function deleteBackup($fileName)
     {
         Storage::delete('backups/' . $fileName);
-        session()->flash('success', 'Backup deleted successfully!');
+        session()->flash('success', 'تم حذف النسخة بنجاح!');
     }
 }

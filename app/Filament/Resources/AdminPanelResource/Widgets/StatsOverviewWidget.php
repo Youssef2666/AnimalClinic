@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\AdminPanelResource\Widgets;
 
+use App\Models\Animal;
+use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Order;
 use App\Models\User;
@@ -32,7 +34,12 @@ class StatsOverviewWidget extends BaseWidget
                     ->chartColor('success'),
             ];
         }
-        return [];
+        return [
+            Stat::make('عدد الحيوانات', Animal::where('user_id', Auth::user()->id)->count())
+                ->description('العدد الكلي للحيوانات الخاصة بك'),
+            Stat::make('عدد المواعيد', Appointment::withoutGlobalScope('user_appointments')->where('doctor_id', Auth::user()->id)->count())
+                ->description('العدد الكلي للمواعيد الخاصة بك'),
+        ];
     }
 
     private function getMonthlyCounts(string $model): array

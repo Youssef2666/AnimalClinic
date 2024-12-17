@@ -24,7 +24,6 @@ class ResetPasswordNotification extends Notification
         $this->fromEmail = 'kingyoussef76@gmail.com';
         $this->mailer = 'smtp';
         $this->otp = $otp;
-        Log::info('EmailVerificationNotification constructor');
         $this->receiverEmail = $email;
     }
 

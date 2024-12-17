@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AnimalsOverview extends BaseWidget
 {
-    public static ?int $sort = 2;
+    // public static ?int $sort = 2;
 
     protected function getStats(): array
     {
@@ -20,8 +20,6 @@ class AnimalsOverview extends BaseWidget
                 ->description('العدد الكلي للحيوانات')
                 ->chart($this->getMonthlyCounts(Animal::class))
                 ->chartColor('primary'),
-
-
             Stat::make('عدد التصنيفات', AnimalCategory::count())
                 ->description('العدد الكلي لتصنيفات الحيوانات')
                 ->chart($this->getMonthlyCounts(AnimalCategory::class))
@@ -44,7 +42,6 @@ class AnimalsOverview extends BaseWidget
                 ->whereMonth('created_at', $month)
                 ->count();
         }
-
         return $data;
     }
 

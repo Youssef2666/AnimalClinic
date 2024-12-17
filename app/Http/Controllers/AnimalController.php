@@ -24,9 +24,6 @@ class AnimalController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreAnimalRequest $request)
     {
         try {
@@ -42,13 +39,12 @@ class AnimalController extends Controller
                 ];
 
                 if ($request->hasFile('image')) {
-                    $imagePath = $request->file('image')->store('animals', 'public'); // Store in 'storage/app/public/animals'
-                    $data['image'] = $imagePath; // Save the path in the database
+                    $imagePath = $request->file('image')->store('animals', 'public');
+                    $data['image'] = $imagePath;
                 }
 
                 $animal = Animal::create($data);
 
-                // Create the medical record associated with the animal
                 $animal->medicalRecord()->create([
                     'animal_id' => $animal->id,
                     'notes' => 'This is the medical record for the animal',
@@ -64,23 +60,16 @@ class AnimalController extends Controller
             );
 
         } catch (\Throwable $th) {
-            // Handle exceptions and return the error message
             return $this->error($th->getMessage(), 500);
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $animal = Animal::findOrFail($id)->with('category')->first();
         return new AnimalResource($animal);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $animal = Animal::findOrFail($id);
@@ -88,9 +77,7 @@ class AnimalController extends Controller
         return $this->success($animal, 'animal updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(string $id)
     {
         Animal::destroy($id);

@@ -82,8 +82,14 @@ class AppointmentResource extends Resource
                         $record->status = $data['status'];
                         $record->save();
 
-                        $title = "Appointment Status Changed";
-                        $body = "The status of your appointment has been updated to {$data['status']}.";
+                        $title = "حالة موعدك تم تغييرها";
+                        if($data['status'] == AppointmentStatus::CONFIRMED->value){
+                            $body = "لقد تم تأكيد موعدك بنجاح.";
+                        } else if($data['status'] == AppointmentStatus::CANCELED->value){
+                            $body = "لقد تم إلغاء موعدك.";
+                        }else if ($data['status'] == AppointmentStatus::COMPLETED->value){
+                            $body = "لقد تم إكمال موعدك بنجاح.";
+                        }
                         $notificationData = [
                             'appointment_id' => $record->id,
                             'status' => $data['status'],

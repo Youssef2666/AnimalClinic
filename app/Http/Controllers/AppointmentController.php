@@ -21,7 +21,7 @@ class AppointmentController extends Controller
         $appointments = Appointment::with(['zoomAppointment' => function ($query) {
             $query->withoutGlobalScope('doctor_appointments');
         }])->withoutGlobalScope('user_appointments')->get();
-        return $this->success($appointments, 'Appointments retrieved successfully', 200);
+        return $this->success($appointments, 'تم جلب المواعيد بنجاح', 200);
     }
 
     public function store(StoreAppointmentRequest $request)
@@ -29,15 +29,14 @@ class AppointmentController extends Controller
         $userId = Auth::id();
         $animalCount = Animal::where('user_id', $userId)->count();
 
-        $todayDate = now()->format('Y-m-d');
-        $todayAppointmentsCount = Appointment::withoutGlobalScope('user_appointments')
-            ->whereDate('date', $todayDate)
+        $date = $request->date;
+        $appointmentsCount = Appointment::withoutGlobalScope('user_appointments')
+            ->whereDate('date', $date)
             ->whereHas('animal', function ($query) use ($userId) {
                 $query->where('user_id', $userId);
             })
             ->count();
-
-        if ($todayAppointmentsCount >= $animalCount) {
+        if ($appointmentsCount >= $animalCount) {
             return $this->error('لقد تم تجاوز حدود المواعيد في اليوم الواحد', 403);
         }
         $appointment = Appointment::create([
