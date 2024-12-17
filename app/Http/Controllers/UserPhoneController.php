@@ -5,16 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserPhone;
 use App\Services\OTPService;
-use Illuminate\Http\Request;
 use App\traits\ResponseTrait;
-use App\Services\VonageService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserPhoneController extends Controller
 {
     use ResponseTrait;
 
-    public function __construct(private OTPService $otpService){
+    public function __construct(private OTPService $otpService)
+    {
     }
     public function index()
     {
@@ -28,7 +29,11 @@ class UserPhoneController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'phone_number' => 'required|unique:user_phones,phone_number',
+            'phone_number' => [
+                'required',
+                'unique:user_phones,phone_number',
+                'regex:/^(092|091|093)[0-9]{7}$/',
+            ],
         ]);
 
         $user = Auth::user();
@@ -37,26 +42,44 @@ class UserPhoneController extends Controller
             return response()->json(['error' => 'لا يمكن إضافة أكثر من 2 رقم هاتف'], 422);
         }
 
-        $user->phones()->create($request->only('phone_number'));
+        $formattedPhoneNumber = preg_replace('/^0/', '+218', $request->phone_number);
+
+        $user->phones()->create(['phone_number' => $formattedPhoneNumber]);
 
         return response()->json(['success' => 'تم إضافة رقم الهاتف بنجاح'], 201);
     }
 
-    
     public function show(string $id)
     {
         $phone = User::findOrFail($id)->phones()->first();
         return $this->success($phone);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $phone = UserPhone::where('id', $id)->where('user_id', Auth::user()->id)->first();
-        $phone->update($request->all());
-        return $this->success($phone, 'تم تحديث رقم الهاتف بنجاح');
+
+        if (!$phone) {
+            return response()->json(['error' => 'رقم الهاتف غير موجود'], 404);
+        }
+
+        try {
+            $request->validate([
+                'phone_number' => [
+                    'required',
+                    'regex:/^(092|091|093)[0-9]{7}$/',
+                    Rule::unique('user_phones', 'phone_number')->ignore($phone->id),
+                ],
+            ]);
+
+            $formattedPhoneNumber = preg_replace('/^0/', '+218', $request->phone_number);
+
+            $phone->update(['phone_number' => $formattedPhoneNumber]);
+
+            return response()->json(['success' => 'تم تحديث رقم الهاتف بنجاح'], 200);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage());
+        }
     }
 
     /**
