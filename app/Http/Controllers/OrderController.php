@@ -88,8 +88,8 @@ class OrderController extends Controller
         $order->status = OrderStatus::CANCELED->value;
         $order->save();
 
-        return $this->success($order, 'تم إلغاء الطلب بنجاح');
         Auth::user()->notify(new OrderStatusChangedNotification($order));
+        return $this->success($order, 'تم إلغاء الطلب بنجاح');
         }
         catch (\Exception $e) {
             return $this->error($e->getMessage(), 400);
