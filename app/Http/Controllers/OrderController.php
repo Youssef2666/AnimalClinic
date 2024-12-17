@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Product;
-use App\Enums\OrderStatus;
-use Illuminate\Http\Request;
-use App\traits\ResponseTrait;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Notifications\OrderStatusChangedNotification;
+use App\traits\ResponseTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -17,7 +17,17 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Auth::user()?->orders()->with('products.category')->get();
-        return $this->success($orders);
+
+        $ordersWithTotal = $orders->map(function ($order) {
+            $total = $order->products->sum(function ($product) {
+                return $product->pivot->quantity * $product->pivot->price_at_purchase;
+            });
+
+            $order->total = $total;
+            return $order;
+        });
+
+        return $this->success($ordersWithTotal);
     }
 
     /**
@@ -80,18 +90,17 @@ class OrderController extends Controller
 
     public function cancelOrder(Request $request, $orderId)
     {
-        try{
-        $order = Order::where('id', $orderId)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        try {
+            $order = Order::where('id', $orderId)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
 
-        $order->status = OrderStatus::CANCELED->value;
-        $order->save();
+            $order->status = OrderStatus::CANCELED->value;
+            $order->save();
 
-        Auth::user()->notify(new OrderStatusChangedNotification($order));
-        return $this->success($order, 'تم إلغاء الطلب بنجاح');
-        }
-        catch (\Exception $e) {
+            Auth::user()->notify(new OrderStatusChangedNotification($order));
+            return $this->success($order, 'تم إلغاء الطلب بنجاح');
+        } catch (\Exception $e) {
             return $this->error($e->getMessage(), 400);
         }
     }
@@ -110,6 +119,12 @@ class OrderController extends Controller
         if (!$order) {
             return $this->error('الطلب غير موجود', 404);
         }
+
+        $total = $order->products->sum(function ($product) {
+            return $product->pivot->quantity * $product->pivot->price_at_purchase; 
+        });
+
+        $order->total = $total;
 
         return $this->success($order);
     }
