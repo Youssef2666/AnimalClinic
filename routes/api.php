@@ -113,6 +113,7 @@ Route::get('fcm', [AuthController::class, 'sendNotification']);
 
 
 Route::post('update-order/payment-method/{id}', [OrderController::class, 'updateOrderPaymentMethod'])->middleware('auth:sanctum');
+Route::post('update-order/status/{id}', [OrderController::class, 'cancelOrder'])->middleware('auth:sanctum');
 
 Route::get('get-doctor-work-days/{id}', [DoctorController::class, 'getDoctorWorkDays']);
 

@@ -77,6 +77,23 @@ class OrderController extends Controller
         return $this->success($order);
     }
 
+    public function cancelOrder(Request $request, $orderId)
+    {
+        try{
+        $order = Order::where('id', $orderId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $order->status = OrderStatus::CANCELED->value;
+        $order->save();
+
+        return $this->success($order, 'تم إلغاء الطلب بنجاح');
+        }
+        catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
     /**
      * Display the specified resource.
      */

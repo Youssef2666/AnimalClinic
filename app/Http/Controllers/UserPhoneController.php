@@ -31,10 +31,15 @@ class UserPhoneController extends Controller
         $request->validate([
             'phone_number' => [
                 'required',
-                'unique:user_phones,phone_number',
                 'regex:/^(092|091|093)[0-9]{7}$/',
+                'unique:user_phones,phone_number',
             ],
+        ], [
+            'phone_number.required' => 'رقم الهاتف مطلوب.',
+            'phone_number.regex' => 'صيغة رقم الهاتف غير صحيحة.',
+            'phone_number.unique' => 'رقم الهاتف مستخدم بالفعل.',
         ]);
+        
 
         $user = Auth::user();
 
