@@ -20,8 +20,9 @@ class AppointmentStatusNotification extends Notification
     protected $access_token;
     protected $animal_name;
     protected $status;
+    protected $doctor_name;
 
-    public function __construct($title, $body, $data = [], $fcmToken = null, $access_token = null, $animal_name = null, $status = null)
+    public function __construct($title, $body, $data = [], $fcmToken = null, $access_token = null, $animal_name = null, $status = null, $doctor_name = null)
     {
         $this->title = $title;
         $this->body = $body;
@@ -30,12 +31,7 @@ class AppointmentStatusNotification extends Notification
         $this->access_token = $access_token;
         $this->animal_name = $animal_name;
         $this->status = $status;
-
-        Log::info([
-            'title' => $title,
-            'fcmToken' => $fcmToken,
-            'access_token' => $access_token,
-        ]);
+        $this->doctor_name = $doctor_name;
     }
 
     public function via($notifiable)
@@ -65,6 +61,8 @@ class AppointmentStatusNotification extends Notification
                 'greeting' => 'أهلا ' . $notifiable->name . ',',
                 'message' => $statusMessage,
                 'animal_name' => $this->animal_name,
+                'doctor_name' => $this->doctor_name,
+                'appointment_id' => $this->data['appointment_id']
             ]);
     }
 
@@ -74,6 +72,7 @@ class AppointmentStatusNotification extends Notification
             'title' => $this->title,
             'body' => $this->body,
             'data' => $this->data,
+            'doctor_name' => $this->doctor_name
         ]);
     }
 

@@ -80,8 +80,9 @@ class SurgeriesRelationManager extends RelationManager
                 ->after(function ($record) {
                     $medicalRecord = $record->medicalRecord;
                     $user = $medicalRecord->animal->user;
+                    $doctor_name = Auth::user()->name;
                     if ($user) {
-                        $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+                        $user->notify(new MedicalRecordUpdatedNotification($medicalRecord, $doctor_name));
                     }
                     return;
                 }),

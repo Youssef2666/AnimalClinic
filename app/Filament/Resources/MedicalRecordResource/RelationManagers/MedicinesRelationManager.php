@@ -47,7 +47,7 @@ class MedicinesRelationManager extends RelationManager
 
         $user = $medicalRecord->animal->user;
         if ($user) {
-            $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+            $user->notify(new MedicalRecordUpdatedNotification($medicalRecord, doctor_name: Auth::user()->name));
         }
     }
 
@@ -63,6 +63,10 @@ class MedicinesRelationManager extends RelationManager
                 TextColumn::make('medicalRecord.id')
                 ->label('Medical Record ID')
                 ->searchable(),
+                TextColumn::make('created_at')
+                ->label('Created At')
+                ->dateTime('H:i d-m-Y'),
+                
                 TextColumn::make('medicalRecord.notes')
                 ->label('Medical Record Notes')
                 ->searchable()
@@ -70,6 +74,7 @@ class MedicinesRelationManager extends RelationManager
 
                 TextColumn::make('description')
                 ->searchable(),
+
             ])
             ->filters([
                 //
@@ -79,9 +84,10 @@ class MedicinesRelationManager extends RelationManager
                 ->after(function ($record) {
                     $medicalRecord = $record->medicalRecord;
                     $user = $medicalRecord->animal->user;
+                    $doctor_name = Auth::user()->name;
 
                     if ($user) {
-                        $user->notify(new MedicalRecordUpdatedNotification($medicalRecord));
+                        $user->notify(new MedicalRecordUpdatedNotification($medicalRecord, $doctor_name));
                     }
                     return;
                 }),

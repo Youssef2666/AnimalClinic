@@ -86,7 +86,7 @@ class OrderResource extends Resource
                     $record->update(['status' => $data['status']]);
                     Auth::user()->notify(new OrderStatusChangedNotification($record));    
                 })
-                ->visible(fn (Order $record) => $record->status !== OrderStatus::DELIVERED->value)           
+                // ->visible(fn (Order $record) => $record->status !== OrderStatus::DELIVERED->value)           
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
