@@ -12,16 +12,18 @@ class NotificationController extends Controller
 
     public function getUserNotifications(Request $request)
     {
-        $notifications = Auth::user()->notifications->map(function ($notification) {
-            return [
-                'id' => $notification->id,
-                'title' => $notification->data['title'] ?? null,
-                'body' => $notification->data['body'] ?? null,
-                'data' => $notification->data['data'] ?? null,
-                'read_at' => $notification->read_at,
-                'created_at' => $notification->created_at,
-            ];
-        });
+        $notifications = Auth::user()->notifications
+            ->sortByDesc('created_at')
+            ->map(function ($notification) {
+                return [
+                    'id' => $notification->id,
+                    'title' => $notification->data['title'] ?? null,
+                    'body' => $notification->data['body'] ?? null,
+                    'data' => $notification->data['data'] ?? null,
+                    'read_at' => $notification->read_at,
+                    'created_at' => $notification->created_at,
+                ];
+            });
 
         return $this->success($notifications);
     }
@@ -37,7 +39,7 @@ class NotificationController extends Controller
                 'read_at' => $notification->read_at,
                 'created_at' => $notification->created_at,
             ];
-        });;
+        });
 
         return $this->success($notifications);
     }
