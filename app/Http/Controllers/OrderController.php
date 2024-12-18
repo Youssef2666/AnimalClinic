@@ -16,7 +16,7 @@ class OrderController extends Controller
     use ResponseTrait;
     public function index()
     {
-        $orders = Auth::user()?->orders()->with('products.category')->get();
+        $orders = Auth::user()?->orders()->with('products.category')->orderBy('updated_at', 'desc')->get();
 
         $ordersWithTotal = $orders->map(function ($order) {
             $total = $order->products->sum(function ($product) {

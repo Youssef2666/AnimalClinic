@@ -77,7 +77,6 @@ class AnimalController extends Controller
         return $this->success($animal, 'animal updated successfully');
     }
 
-    
     public function destroy(string $id)
     {
         Animal::destroy($id);
@@ -86,9 +85,16 @@ class AnimalController extends Controller
 
     public function getUserAnimals(Request $request, $id)
     {
-        $animals = Animal::with(['appointments', 'category', 'appointments.zoomAppointment' => function($query){
-            $query->withoutGlobalScope('doctor_appointments');
-        }])->where('user_id', $id)->get();
+        $animals = Animal::with([
+            'appointments' => function ($query) {
+                $query->orderBy('updated_at', 'desc');
+            },
+            'category',
+            'appointments.zoomAppointment' => function ($query) {
+                $query->withoutGlobalScope('doctor_appointments');
+            },
+        ])->where('user_id', $id)->get();
+
         return AnimalResource::collection($animals);
     }
 
