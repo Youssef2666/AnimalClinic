@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\AppointmentInterviewStatus;
 use App\Http\Requests\StoreAppointmentRequest;
+use App\Notifications\AppointmentStatusNotification;
 
 class AppointmentController extends Controller
 {
@@ -138,6 +139,14 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::withoutGlobalScope('user_appointments')->find($id);
         $appointment->update($request->all());
+        $title = "حالة موعدك تم تغييرها";
+        $body = "لقد تم إلغاء موعدك.";
+        $notificationData = [
+            'appointment_id' => $appointment->id,
+            'status' => $appointment->status,
+        ];
+        $animal_name = $appointment->animal->name;
+        Auth::user()->notify(new AppointmentStatusNotification($title, $body, $notificationData, animal_name: $animal_name, status: $appointment->status));
         return $this->success($appointment, 'تم تحديث الموعد بنجاح');
     }
 
