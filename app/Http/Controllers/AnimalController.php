@@ -100,7 +100,7 @@ class AnimalController extends Controller
 
     public function getMedicalRecordByAnimalId(string $id)
     {
-        $medical_record = MedicalRecord::where('animal_id', $id)->with('animal', 'surgeries', 'vaccinations', 'medicines')->first();
+        $medical_record = MedicalRecord::where('animal_id', $id)->with('animal', 'surgeries','surgeries.surgeryCategory',  'vaccinations', 'vaccinations.vaccinationCategory', 'medicines', 'medicines.category')->first();
         return $medical_record;
     }
 }
