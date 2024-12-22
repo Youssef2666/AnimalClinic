@@ -100,7 +100,8 @@ class DoctorResource extends Resource
 
                         FileUpload::make('image')
                             ->label('صورة الطبيب')
-                            ->image(),
+                            ->image()
+                            ->imageEditor(),
                             CheckboxList::make('work_days')
                             ->label('Work Days')
                             ->options(array_column(DaysStatus::cases(), 'name', 'value'))

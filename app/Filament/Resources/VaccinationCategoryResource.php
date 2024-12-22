@@ -37,11 +37,11 @@ class VaccinationCategoryResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
+                ->unique(VaccinationCategory::class, 'name', ignoreRecord: true)
                 ->label('اسم التطعيم'),
 
                 TextInput::make('description')
                 ->label('وصف'),
-
             ]);
     }
 
@@ -49,6 +49,10 @@ class VaccinationCategoryResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                ->label('رقم التطعيم')
+                ->searchable()
+                ->sortable(),
                 TextColumn::make('name')
                 ->label('اسم التطعيم')
                 ->searchable()

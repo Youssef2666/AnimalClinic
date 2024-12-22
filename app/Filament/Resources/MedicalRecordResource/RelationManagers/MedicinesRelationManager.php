@@ -19,6 +19,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 class MedicinesRelationManager extends RelationManager
 {
     protected static string $relationship = 'medicines';
+    protected static ?string $modelLabel =  'دواء';
+    protected static ?string $title = 'الأدوية';
+    protected static ?string $pluralModelLabel = 'أدوية';
 
     public function form(Form $form): Form
     {
@@ -27,7 +30,7 @@ class MedicinesRelationManager extends RelationManager
                 Select::make('medicine_category_id')  
                 ->relationship('category', 'name') 
                 ->required()
-                ->label('Medicine Category'),
+                ->label('اسم الدواء'),
 
                 Hidden::make('user_id')
                 ->default(Auth::id())
@@ -39,6 +42,7 @@ class MedicinesRelationManager extends RelationManager
                 // ->label('Medical Record'),
 
                 TextInput::make('description')
+                ->label('وصف'),
             ]);
     }
     public function created($record)
@@ -56,23 +60,27 @@ class MedicinesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('description')
             ->columns([
+                TextColumn::make('id')
+                ->label('رقم الدواء')
+                ->searchable(),
                 TextColumn::make('category.name')
-                ->label('Medicine Name')
+                ->label('اسم الدواء')
                 ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
-                ->label('Medical Record ID')
+                ->label('رقم السجل الصحي')
                 ->searchable(),
                 TextColumn::make('created_at')
-                ->label('Created At')
+                ->label('تاريخ الانشاء')
                 ->dateTime('H:i d-m-Y'),
                 
                 TextColumn::make('medicalRecord.notes')
-                ->label('Medical Record Notes')
+                ->label('ملاحظات')
                 ->searchable()
                 ->toggleable(),
 
                 TextColumn::make('description')
+                ->label('وصف')
                 ->searchable(),
 
             ])

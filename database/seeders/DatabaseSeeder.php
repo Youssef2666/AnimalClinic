@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SurgeryCategorySeeder::class,
             MedicineCategorySeeder::class,
-            VaccinationCategorySeeder::class,
+            // VaccinationCategorySeeder::class,
             MedicineSeeder::class,
             SurgerySeeder::class,
             // VaccinationSeeder::class,

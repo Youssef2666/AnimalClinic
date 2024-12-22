@@ -16,8 +16,8 @@ return new class extends Migration
     {
         Schema::create('surgeries', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(SurgeryCategory::class);
-            $table->foreignIdFor(MedicalRecord::class);
+            $table->foreignIdFor(SurgeryCategory::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(MedicalRecord::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Doctor::class, 'user_id');
             $table->timestamp('surgery_date');   
             $table->text('notes')->nullable();

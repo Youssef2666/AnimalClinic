@@ -89,9 +89,9 @@ class OrderResource extends Resource
                 // ->visible(fn (Order $record) => $record->status !== OrderStatus::DELIVERED->value)           
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

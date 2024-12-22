@@ -16,7 +16,7 @@ class DatabaseBackup extends Page
 
     public static function canAccess(): bool
     {
-        return Auth::user()->isAdmin();
+        return false;
     }
 
 

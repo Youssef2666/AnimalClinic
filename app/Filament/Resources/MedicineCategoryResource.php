@@ -37,12 +37,15 @@ class MedicineCategoryResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
+                ->unique(MedicineCategory::class, 'name', ignoreRecord: true)
                 ->label('اسم الدواء'),
 
                 TextInput::make('description')
                 ->label('وصف'),
 
                 TextInput::make('cost')
+                ->required()
+                ->numeric()
                 ->label('سعر الدواء'),
             ]);
     }
@@ -51,6 +54,10 @@ class MedicineCategoryResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                ->label('رقم الدواء')
+                ->searchable()
+                ->sortable(),
                 TextColumn::make('name')
                 ->label('اسم الدواء')
                 ->searchable()
@@ -73,9 +80,9 @@ class MedicineCategoryResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

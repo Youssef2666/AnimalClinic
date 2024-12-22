@@ -37,6 +37,7 @@ class ProductCategoryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                 ->required()
+                ->unique(ProductCategory::class, 'name', ignoreRecord: true)
                 ->label('الاسم'),
 
                 Forms\Components\TextInput::make('description')
@@ -49,6 +50,10 @@ class ProductCategoryResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                ->searchable()
+                ->label('رقم الصنف')
+                ->sortable(),
                 TextColumn::make('name')
                 ->searchable()
                 ->label('الاسم')

@@ -40,11 +40,12 @@ class ProductResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->label('اسم المنتج')
+                ->unique(Product::class, 'name', ignoreRecord: true)
                 ->required(),
-                
                 TextInput::make('price')
                 ->label('سعر المنتج')
-                ->required(),
+                ->required()
+                ->numeric(),
                 Select::make('product_category_id')
                 ->relationship('category', 'name')
                 ->required()
@@ -52,8 +53,12 @@ class ProductResource extends Resource
                 TextInput::make('description')
                 ->label('وصف'),
                 TextInput::make('stock')
-                ->label('الكمية'),
+                ->label('الكمية')
+                ->required()
+                ->numeric(),
                 FileUpload::make('image')
+                ->image()
+                ->imageEditor()
                 ->label('صورة المنتج')
             ]);
     }
@@ -62,6 +67,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                ->label('رقم المنتج')
+                ->sortable()
+                ->searchable(),
                 TextColumn::make('name')
                 ->label('اسم المنتج')
                 ->searchable(),
@@ -83,9 +92,9 @@ class ProductResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

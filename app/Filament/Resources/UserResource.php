@@ -38,10 +38,10 @@ class UserResource extends Resource
                 TextInput::make('email')->email()->required()->unique(ignoreRecord: true)->label('البريد الالكتروني'),
                 TextInput::make('password')->password()->visibleOn('create')->label('كلمة المرور'),
                 //the key will be saved in db and value will be shown in the select
-                Select::make('role')->options([
-                    'doctor' => 'Doctor',
-                    'employee' => 'Employee',
-                ])
+                // Select::make('role')->options([
+                //     'doctor' => 'Doctor',
+                //     'employee' => 'Employee',
+                // ])
             ]);
     }
 
@@ -57,7 +57,15 @@ class UserResource extends Resource
                 ->label('البريد الالكتروني')
                 ->searchable(),
                 TextColumn::make('role')->label('الدور')->searchable()->sortable(),
-                TextColumn::make('status')->label('الحالة')->searchable()->sortable(),
+                TextColumn::make('status')->label('الحالة')->searchable()->sortable()
+                ->badge()
+                ->color(function ($state) {
+                    return match ($state) {
+                        1 => 'success',
+                        0 => 'danger',   
+                        default => 'secondary',                     
+                    };
+                }),
             ])
             ->filters([
                 SelectFilter::make('role')->options([
@@ -67,12 +75,12 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-
+                // Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -87,7 +95,7 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
+            // 'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

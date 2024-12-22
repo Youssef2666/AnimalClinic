@@ -41,7 +41,7 @@ class AuthController extends Controller
             $request->validated($request->all());
 
             if (!Auth::attempt($request->only('email', 'password'))) {
-                return $this->error('Credentials do not match', 401);
+                return $this->error('البيانات التي أدخلتها غير صحيحة', 401);
             }
 
             $user = User::where('email', $request['email'])->firstOrFail();

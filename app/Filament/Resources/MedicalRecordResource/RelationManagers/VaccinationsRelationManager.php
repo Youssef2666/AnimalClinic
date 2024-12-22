@@ -19,6 +19,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 class VaccinationsRelationManager extends RelationManager
 {
     protected static string $relationship = 'vaccinations';
+    protected static ?string $modelLabel = 'تطعيم';
+    protected static ?string $title = 'التطعيمات';
+    protected static ?string $pluralModelLabel = 'التطعيمات';
 
     public function form(Form $form): Form
     {
@@ -26,15 +29,20 @@ class VaccinationsRelationManager extends RelationManager
             ->schema([
                 Select::make('vaccination_category_id')
                     ->relationship('vaccinationCategory', 'name')
+                    ->label('اسم التطعيم')
                     ->required(),
 
                 Hidden::make('user_id')
                     ->default(Auth::id()),
 
                 DateTimePicker::make('vaccination_date')
+                ->label('تاريخ التطعيم')
+                ->afterOrEqual(now())
+                ->default(now())
                     ->required(),
 
-                TextInput::make('notes'),
+                TextInput::make('notes')
+                    ->label('ملاحظات'),
             ]);
     }
 
@@ -44,19 +52,19 @@ class VaccinationsRelationManager extends RelationManager
             ->recordTitleAttribute('notes')
             ->columns([
                 TextColumn::make('vaccinationCategory.name')
-                    ->label('Vaccination Name')
+                    ->label('اسم التطعيم')
                     ->searchable(),
 
                 TextColumn::make('vaccinationCategory.cost')
-                    ->label('Vaccination Cost')
+                    ->label('التكلفة')
                     ->searchable(),
 
                 TextColumn::make('medicalRecord.id')
-                    ->label('Medical Record ID')
+                    ->label('رقم السجل الصحي')
                     ->searchable(),
 
                 TextColumn::make('vaccination_date')
-                    ->label('Vaccination Date')
+                    ->label('تاريخ التطعيم')
                     ->searchable(),
             ])
             ->filters([

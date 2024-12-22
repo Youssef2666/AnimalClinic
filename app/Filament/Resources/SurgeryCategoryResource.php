@@ -37,12 +37,15 @@ class SurgeryCategoryResource extends Resource
             ->schema([
                 TextInput::make('name')
                 ->required()
+                ->unique(SurgeryCategory::class, 'name', ignoreRecord: true)
                 ->label('اسم العملية'),
 
                 TextInput::make('description')
                 ->label('وصف'),
 
                 TextInput::make('cost')
+                ->required()
+                ->numeric()
                 ->label('سعر العملية'),
             ]);
     }
@@ -51,6 +54,10 @@ class SurgeryCategoryResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                ->label('رقم العملية')
+                ->searchable()
+                ->sortable(),
                 TextColumn::make('name')
                 ->label('اسم العملية')
                 ->searchable()
@@ -73,9 +80,9 @@ class SurgeryCategoryResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

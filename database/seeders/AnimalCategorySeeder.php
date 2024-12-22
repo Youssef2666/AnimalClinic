@@ -14,17 +14,29 @@ class AnimalCategorySeeder extends Seeder
     {
         $animals_category = [
             [
-                'name' => 'كلب',
+                'name' => 'القطط',
                 'description' => 'whoff.',
             ],
             [
-                'name' => 'قط',
+                'name' => 'الكلاب',
                 'description' => 'meow.',
             ],
             [
-                'name' => 'طائر',
+                'name' => 'الطيور',
                 'description' => 'tweet.',
+            ],
+            [
+                'name' => 'الأسماك',
+                'description' => 'bark.',
+            ],
+            [
+                'name' => 'غير ذلك',
+                'description' => '',
             ]
         ];
+
+        foreach ($animals_category as $animal_category) {
+            \App\Models\AnimalCategory::create($animal_category);
+        }
     }
 }

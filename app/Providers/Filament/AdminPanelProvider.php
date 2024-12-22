@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->spa()
             ->login()
-            ->databaseNotifications()
+            // ->databaseNotifications()
             // ->plugin(
             //     FilamentLoggerPlugin::make()
             // )

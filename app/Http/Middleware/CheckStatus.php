@@ -19,7 +19,7 @@ class CheckStatus
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->user()->status == User::STATUS['InActive']) {
-            return $this->error('Your account is not active', 401);
+            return $this->error('حسابك غير مفعل', 401);
         }
         return $next($request);
     }

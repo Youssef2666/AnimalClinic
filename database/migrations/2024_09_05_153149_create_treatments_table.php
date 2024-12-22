@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create('treatments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Doctor::class);
-            $table->foreignIdFor(MedicalRecord::class);
+            $table->foreignIdFor(MedicalRecord::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(TreatmentCategory::class);
             $table->date('treatment_start_date');
             $table->date('treatment_end_date');
