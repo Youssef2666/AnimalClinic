@@ -27,11 +27,9 @@ class PasswordController extends Controller
     try {
         $input = $request->validated();
 
-        // Generate OTP and store it
         $otpDetails = $this->otp->generate($input['email'], 'numeric', 6, 60);
         $user = User::where('email', $input['email'])->first();
 
-        // Send OTP via notification
         $user->notify(new ResetPasswordNotification($user->email, $otpDetails->token));
 
         return $this->success($otpDetails->token, 'Email verification OTP sent');
@@ -45,7 +43,6 @@ class PasswordController extends Controller
         $input = $request->validated();
 
         try {
-            // Validate OTP
             $otpValid = $this->otp->validate($request->email, $request->otp);
 
             if (!$otpValid->status) {
@@ -58,7 +55,6 @@ class PasswordController extends Controller
                 return $this->error('User not found', 404);
             }
 
-            // Update the user's password
             $user->update(['password' => Hash::make($input['password'])]);
 
             return $this->success(message:'Password reset successfully');

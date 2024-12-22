@@ -55,20 +55,17 @@ class LocalBankCardsController extends Controller
 
             if ($callback->isApprovedTransaction()) {
                 $transactionId = $callback->getParameter('transaction_id');
-
-                return response()->json([
+                return view('auth.payment-success', [
                     'message' => 'تم الدفع بنجاح',
-                    'transactionId' => $transactionId,
                 ]);
             } elseif ($callback->isCanceledTransaction()) {
-                return response()->json([
-                    'message' => 'تم إلغاء الدفع',
+                return view('auth.payment-failed', [
+                    'message' => 'تم الغاء الدفع',
                 ]);
             }
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'فشل الدفع',
-                'error' => $e->getMessage(),
+            return view('auth.payment-failed', [
+                'message' => 'حدث خطأ أثناء معالجة الدفع',
             ]);
         }
     }
