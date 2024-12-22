@@ -14,4 +14,5 @@ class VaccinationCategory extends Model
         'description',
         'cost'
     ];
+    
 }
