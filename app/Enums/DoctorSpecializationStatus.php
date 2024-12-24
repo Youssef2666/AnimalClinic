@@ -6,9 +6,10 @@ use ReflectionEnum;
 
 
 enum DoctorSpecializationStatus : String {
-    case CATS = 'cats';
-    case DOGS = 'dogs';
-    case BIRDS = 'birds';
+    case CATS = 'قطط';
+    case DOGS = 'كلاب';
+    case BIRDS = 'طيور';
+    case FISH = 'أسماك';
 
     public static function values(): array
     {
@@ -18,9 +19,10 @@ enum DoctorSpecializationStatus : String {
     public function label(): string
     {
         return match ($this) {
-            self::CATS => 'Cats',
-            self::DOGS => 'Dogs',
-            self::BIRDS => 'Birds',
+            self::CATS => 'قطط',
+            self::DOGS => 'كلاب',
+            self::BIRDS => 'طيور',
+            self::FISH => 'أسماك',
         };
     }
 }

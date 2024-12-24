@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('favorite_products', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Product::class);
+            $table->foreignIdFor(Product::class)->constrained()->onDelete('cascade');
             $table->unique(['user_id', 'product_id']);
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('zoom_meetings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Appointment::class);
+            $table->foreignIdFor(Appointment::class)->constrained()->onDelete('cascade');
             $table->string('meeting_id')->unique();
             $table->text('start_url');
             $table->text('join_url');
