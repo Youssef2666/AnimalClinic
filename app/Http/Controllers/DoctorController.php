@@ -3,23 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDoctorRequest;
-use App\Http\Resources\DoctorResource;
 use App\Models\Doctor;
 use App\traits\ResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class DoctorController extends Controller
 {
     use ResponseTrait;
     public function index()
     {
-        $doctors = Doctor::all();
-        return DoctorResource::collection($doctors);
+        try {
+            $doctors = Doctor::with('user')->get()->map(function ($doctor) {
+                $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
+                $doctor->user_name = $doctor->user->name;
+                return $doctor;
+            });
+
+            return $this->success($doctors);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreDoctorRequest $request)
     {
         try {
@@ -35,8 +41,17 @@ class DoctorController extends Controller
      */
     public function show(string $id)
     {
-        $doctor = Doctor::findOrFail($id);
-        return $this->success($doctor);
+        try {
+            $doctor = Doctor::with('user')->findOrFail($id);
+
+            $doctor->image_url = $doctor->image ? asset('storage/' . $doctor->image) : null;
+
+            $doctor->user_name = $doctor->user->name;
+
+            return $this->success($doctor);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage());
+        }
     }
 
     /**
@@ -56,5 +71,41 @@ class DoctorController extends Controller
     {
         Doctor::destroy($id);
         return $this->success(null, 'doctor deleted successfully');
+    }
+
+    public function saveDoctorsToRedis()
+    {
+        $doctors = Doctor::with('user')->get();
+
+        foreach ($doctors as $doctor) {
+            $doctorData = [
+                'id' => $doctor->id,
+                'name' => $doctor->user->name,
+                'specialization' => $doctor->specialization,
+                'image_url' => $doctor->image ? asset('storage/' . $doctor->image) : null,
+            ];
+
+            Redis::hset('doctors', $doctor->id, json_encode($doctorData));
+        }
+
+        return response()->json(['message' => 'Doctors data saved to Redis']);
+    }
+
+    public function getDoctorsFromRedis()
+    {
+        $doctors = Redis::hgetall('doctors');
+
+        $decodedDoctors = [];
+        foreach ($doctors as $id => $data) {
+            $decodedDoctors[$id] = json_decode($data, true);
+        }
+
+        return response()->json($decodedDoctors);
+    }
+    public function getDoctorWorkDays($id){
+        $doctor = Doctor::findOrFail($id);
+        $days = $doctor->workDays()->pluck('day');
+        return $this->success($days);
+        return $this->success($doctor->workDays);
     }
 }

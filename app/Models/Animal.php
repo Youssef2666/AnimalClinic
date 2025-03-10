@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\MedicalRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Animal extends Model
 {
@@ -11,9 +12,13 @@ class Animal extends Model
 
     protected $fillable = [
         'name',
-        'age',
         'user_id',
+        'age',
+        'weight',
         'animal_type',
+        'animal_category_id',
+        'gender',
+        'image'
     ];
 
     public function user()
@@ -23,11 +28,19 @@ class Animal extends Model
 
     public function category()
     {
-        return $this->belongsTo(AnimalCategory::class, 'animal_type');
+        return $this->belongsTo(AnimalCategory::class, 'animal_category_id');
     }
 
     public function appointments()
     {
         return $this->hasMany(Appointment::class);
+    }
+
+    public function zoomAppointment(){
+        return $this->hasManyThrough(ZoomMeeting::class, Appointment::class);
+    }
+
+    public function medicalRecord(){
+        return $this->hasOne(MedicalRecord::class);
     }
 }

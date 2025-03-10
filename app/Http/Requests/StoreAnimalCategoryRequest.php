@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAnimalCategoryRequest extends FormRequest
+class StoreAnimalCategoryRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class StoreAnimalCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required'],
+            'name' => ['required'],
         ];
     }
 }

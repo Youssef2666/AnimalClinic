@@ -10,7 +10,8 @@ class AnimalCategory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type',
+        'name',
+        'description',
     ];
 
     public function animals()

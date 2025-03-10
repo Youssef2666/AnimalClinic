@@ -6,11 +6,24 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "filament/filament": "3.2.57",
+        "filament/notifications": "^3.2",
+        "ichtrojan/laravel-otp": "^2.0",
+        "jubaer/zoom-laravel": "^1.3",
+        "kreait/laravel-firebase": "^5.10",
+        "laravel-notification-channels/fcm": "^4.5",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.1",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
-        "livewire/livewire": "^3.0"
+        "livewire/livewire": "^3.0",
+        "plutu/plutu-laravel": "^1.1",
+        "predis/predis": "2.0",
+        "shuvroroy/filament-spatie-laravel-backup": "^2.2",
+        "tomatophp/filament-logger": "^1.0",
+        "vonage/client": "^4.1",
+        "wnx/laravel-backup-restore": "^1.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -26,7 +39,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Http/Helpers/Utilities.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -36,7 +52,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

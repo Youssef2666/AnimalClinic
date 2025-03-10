@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Animal;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,13 +12,18 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin() || $this->isDoctor();
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +34,22 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
+        'role',
+        'fcm_token',
+        'access_token',
+    ];
+
+    public const ROLES = [
+        'user' => 'User',
+        'admin' => 'Admin',
+        'doctor' => 'Doctor',
+        'employee' => 'Employee',
+    ];
+
+    public const STATUS = [
+        'InActive' => 0,
+        'Active' => 1,
     ];
 
     /**
@@ -72,4 +95,53 @@ class User extends Authenticatable
     {
         return $this->role === 'user';
     }
+
+    public function isDoctor()
+    {
+        return $this->role === 'doctor';
+    }
+    public function isEmployee()
+    {
+        return $this->role === 'employee';
+    }
+
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
+
+    public function scopeDoctor($query)
+    {
+        return $query->where('role', 'doctor');
+    }
+
+    public function animals()
+    {
+        return $this->hasMany(Animal::class);
+    }
+
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorite_products');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function phones()
+    {
+        return $this->hasMany(UserPhone::class);
+    }
+
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
+    public function appointments(){
+        return $this->hasManyThrough(Appointment::class, Animal::class);
+    }
+
 }

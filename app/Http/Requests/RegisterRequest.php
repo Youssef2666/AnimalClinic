@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Actions\Fortify\PasswordValidationRules;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class RegisterRequest extends BaseRequest
 {
     use PasswordValidationRules;
     /**
@@ -27,6 +27,7 @@ class RegisterRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
+            'fcm_token' => ['nullable', 'string'],
         ];
     }
 }

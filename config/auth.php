@@ -79,7 +79,7 @@ return [
     'roles' => [
         'admin' => [
             'driver' => 'sanctum',
-            'provider' => 'admins',
+            'provider' => 'users',
         ],
         'user' => [
             'driver' => 'sanctum',

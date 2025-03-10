@@ -2,28 +2,119 @@
 
 use App\Http\Controllers\AnimalCategoryController;
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\LocalBankCardsController;
+use App\Http\Controllers\MedicalRecordController;
+use App\Http\Controllers\MedicineCategoryController;
+use App\Http\Controllers\MedicineController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SadadController;
+use App\Http\Controllers\SurgeryCategoryController;
+use App\Http\Controllers\SurgeryController;
+use App\Http\Controllers\UserPhoneController;
+use App\Http\Controllers\VaccinationCategoryController;
+use App\Http\Controllers\VaccinationController;
+use App\Http\Controllers\ZoomController;
+use App\Models\User;
+use function Pest\Laravel\json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/test', function () {
+    return "test";
+})->middleware(['auth:sanctum', 'verified']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 Route::post('register', [AuthController::class, 'register']);
+// Route::post('/forgot-password', [PasswordController::class, 'forgotPassword']);
+// Route::post('/reset-password', [PasswordController::class, 'resetPassword']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('/forget-password', [PasswordController::class, 'sendResetLinkEmail']);
+Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('send-otp', [AuthController::class, 'sendOtp']);
+Route::get('authme', [AuthController::class, 'authme'])->middleware(['auth:sanctum']);
 
+Route::middleware(['auth:sanctum', 'status', 'verified-user'])->group(function () {
+    Route::delete('logout', [AuthController::class, 'logout']);
+    Route::apiResources([
+        'animals' => AnimalController::class,
+        'doctors' => DoctorController::class,
+        'medical_records' => MedicalRecordController::class,
+        'animals_category' => AnimalCategoryController::class,
+        'surgeries_category' => SurgeryCategoryController::class,
+        'vaccinations_category' => VaccinationCategoryController::class,
+        'medicines_category' => MedicineCategoryController::class,
+        'surgeries' => SurgeryController::class,
+        'medicines' => MedicineController::class,
+        'vaccinations' => VaccinationController::class,
+        'appointments' => AppointmentController::class,
+        'products' => ProductController::class,
+        'orders' => OrderController::class,
+        'payment_methods' => PaymentMethodController::class,
+        'phones' => UserPhoneController::class,
+        'product-categories' => ProductCategoryController::class,
+    ]);
+    Route::get('animals/{id}/medical-record', [AnimalController::class, 'getMedicalRecordByAnimalId']);
+    Route::get('appointments/{id}/doctor', [AppointmentController::class, 'getDoctorAppointments']);
+    Route::post('orders/{id}/add-products', [OrderController::class, 'addProductsToOrder']);
+    Route::post('products/{id}/favorite', [ProductController::class, 'toggleProductInFavorite']);
+    Route::get('productss/favorite/get', [ProductController::class, 'getMyFavoriteProducts']);
+    Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
+    Route::patch('/notifications/{id}/mark-as-read', [NotificationController::class, 'markNotificationAsRead']);
+    Route::get('/notifications/unread', [NotificationController::class, 'getUserUnreadNotifications']);
+});
+Route::get('/animals/{id}/user', [AnimalController::class, 'getUserAnimals']);
+
+Route::middleware(['auth:sanctum', 'role:admin', 'status'])->group(function () {
+    Route::get('check', function () {
+        return 'Yes, I am Admin';
+    });
+});
 Route::get('users', [AuthController::class, 'index']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('authme', [AuthController::class, 'authme']);
-    Route::apiResources(
-        [
-            'animals' => AnimalController::class,
-            'animals_category' => AnimalCategoryController::class,
-            'doctors' => DoctorController::class,
-        ]
-    );
+// Fallback route for handling 404 errors
+Route::fallback(function () {
+    return response()->json(['message' => 'Page Not Found.'], 404);
+});
 
+// Public route for ZoomController
+Route::get('zoom', [ZoomController::class, 'index']);
+
+//adfali
+Route::post('adfali', [PaymentController::class, 'adfali']);
+Route::post('adfali/confirm', [PaymentController::class, 'confirmPayment']);
+
+//sadad
+Route::post('sadad', [SadadController::class, 'sadad']);
+Route::post('sadad/confirm', [SadadController::class, 'confirmPayment']);
+
+//Local bank cards
+Route::post('local-bank-cards', [LocalBankCardsController::class, 'initiatePayment'])->name('payment.initiate');
+Route::post('local-bank-cards/check-payment', [LocalBankCardsController::class, 'checkPaymentStatus']);
+
+//FCM
+Route::get('fcm', [AuthController::class, 'sendNotification']);
+
+Route::post('update-order/payment-method/{id}', [OrderController::class, 'updateOrderPaymentMethod'])->middleware('auth:sanctum');
+Route::post('update-order/status/{id}', [OrderController::class, 'cancelOrder'])->middleware('auth:sanctum');
+
+Route::get('get-doctor-work-days/{id}', [DoctorController::class, 'getDoctorWorkDays']);
+
+Route::post('doctors-redis', [DoctorController::class, 'saveDoctorsToRedis']);
+Route::get('doctors-redis-all', [DoctorController::class, 'getDoctorsFromRedis']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('user-phones/send-otp', [UserPhoneController::class, 'sendOtp']);
+    Route::post('user-phones/verify-otp', [UserPhoneController::class, 'verifyOtp']);
 });

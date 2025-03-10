@@ -2,9 +2,11 @@
 
 use App\Models\Animal;
 use App\Models\Doctor;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\MedicalRecord;
+use App\Models\TreatmentCategory;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -15,10 +17,14 @@ return new class extends Migration
     {
         Schema::create('treatments', function (Blueprint $table) {
             $table->id();
-            $table->date('treatment_date');
-            $table->text('notes');
             $table->foreignIdFor(Doctor::class);
-            $table->foreignIdFor(Animal::class);
+            $table->foreignIdFor(MedicalRecord::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(TreatmentCategory::class);
+            $table->date('treatment_start_date');
+            $table->date('treatment_end_date');
+            $table->text('description')->nullable();
+            $table->integer('dosage');
+            $table->float('cost');
             $table->timestamps();
         });
     }

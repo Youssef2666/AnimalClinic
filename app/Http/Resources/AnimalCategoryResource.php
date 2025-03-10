@@ -16,7 +16,8 @@ class AnimalCategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'type' => $this->type,
+            'name' => $this->name,
+            'description' => $this->description,
         ];
     }
 }

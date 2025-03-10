@@ -6,7 +6,7 @@ use App\Enums\GenderStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreDoctorRequest extends FormRequest
+class StoreDoctorRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -10,9 +10,11 @@ class Treatment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'treatment_date',
-        'notes',
-        'doctor_id',
-        'animal_id',
+        'name',
+        'description',
+        'duration',
+        'price',
+        'product_category_id',
+        'vaccination_category_id',
     ];
 }
